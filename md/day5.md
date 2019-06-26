@@ -12,6 +12,7 @@
         <html></html>
         {[() ()]}
       * head
+      
         * https://github.com/joshbuchea/HEAD
         * 头部标签，放一些与页面相关的“元信息”，比如：
         * 页面的编码方式
