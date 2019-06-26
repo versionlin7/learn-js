@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>画图</title>
+  <style>
+    canvas {
+      border: 2px solid #f0f;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas width="400" height="300"></canvas>
+</body>
+<script>
+  var canvas = document.querySelector('canvas')
+  canvas.style.imageRendering = 'pixelated'
+  var ctx = canvas.getContext('2d')
+
+  function dot(x, y, color = 'black') {
+    ctx.fillStyle = color
+    ctx.fillRect(x, y, 1, 1)
+  }
+  /**
+   * YOUR TASK
+画图的题：
+画一条实线
+画一条一个实点一个空点的虚线
+画一条两个实点两个空点的虚线
+画一条三个实点两个空点的虚线
+画一条45度的斜线
+画一条跨越画布左上角和右下角的对角线
+画一个空心矩形
+画一个实心矩形
+画一个rgb色彩空间的某一面
+画一个实心的圆
+画一个空心的圆
+画一个大小合适的sin(x)的图像
+   */
+</script>
+<script>
+  // YOUR CODE GOES BELOW画一条实线
+//画一条一个实点一个空点的虚线
+
+  for(var i = 0; i < 400; i++){
+    dot( i , 30 , 'red')
+  }
+  //画一条两个实点两个空点的虚线
+
+  for(var i =0; i < 400; i++){
+    if(i % 2 == 0){
+      dot(i , 40 , 'black')
+    }
+  }
+  //画一条三个实点两个空点的虚线
+
+  for(var i = 0; i < 400; i++){
+    if(i % 4 == 0){
+      dot(i , 25 , 'black')
+      dot(i+1 , 25 , 'black')
+    }
+  }
+ // 画一条45度的斜线
+  for(var i = 0; i < 400; i++){
+    if(i % 5 == 0){
+      dot(i , 60 , 'black')
+      dot(i+1 , 60 , 'black')
+      dot(i+2 , 60 , 'black')
+
+    }
+  }
+  //画一条跨越画布左上角和右下角的对角线
+  for(var w = 0; w < 400; w++){
+    dot( w , w , 'red')
+  }
+
+
+  for(var w = 0; w < 400; w++){
+    dot( w , w * (3/4), 'red')
+  }
+ //画一个空心矩形
+  for(var h = 90; h <= 120; h++){
+    if(h == 90){
+      for(var w = 300; w < 350; w++){
+        dot(w , h, 'black')
+      }
+    }
+    if(h == 120){
+      for(var w = 300; w < 350; w++){
+        dot(w , h, 'black')
+      }
+    }
+    dot(300 , h ,'black')
+    dot(350 , h ,'black')
+  }
+  //画一个实心矩形
+  for(var w = 300; w < 350; w++){
+    for(var h = 130;h < 150; h++){
+      dot(w , h , 'red')
+    }
+  }
+
+  //画一个rgb色彩空间的某一面
+  for(var w = 0; w < 150; w++){
+    for(var h = 100;h < 220; h++){
+      dot(w , h , 'rgb('+Math.floor(w)+','+Math.floor(h)+','+Math.floor(w + h)+')')
+    }
+  }
+  //画一个实心的圆
+for (var x = 0; x < 50; x++) {
+  for (var y = 0; y < 50; y++) {
+    if((x-25)*(x-25)+(y-25)*(y-25) < 25 * 25) {
+       dot(x , y , 'black')
+    }
+  }
+} 
+  //画一个空心的圆
+for (var x = 149; x < 201; x ++) {
+  for (var y = 149; y < 201; y ++) {
+    if(((x-175)*(x-175)+(y-175)*(y-175) == 25 * 25)) {
+       dot(x , y , 'black')
+    }
+  }
+}
+  //画一个大小合适的sin(x)的图像
+  for(var x = 0; x <= 400; x++){
+    var y = 10 * Math.sin( 0.1*x )+100
+    dot(x ,y ,'black')
+    
+  }
+
+</script>
+</html>
