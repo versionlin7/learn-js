@@ -4,7 +4,7 @@
 
 * HTML的默认样式并不好看，如何才能做出漂亮的界面（UI）呢？
 * 以前（现在也），标签的属性可以给该标签提供一定的样式：
-* 甚至是一些标签本身就自带样式，如 center
+* 甚至是一些标也），标签签本身就自带样式，如 center
 * 如body,table标签
   ```html
   <body link="aqua"
@@ -264,6 +264,9 @@
                 * tv
                 * 可用逗号分隔这些属性值：
                     * media=“screen,tv”
+        *a::after{
+            content:'('attr(href)')'
+        } //打印时显示链接网址
         * 内联样式
             - `<div style="color:red;font-size:45px;"></div>`
         * DOM

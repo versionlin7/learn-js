@@ -1,0 +1,157 @@
+<script>
+
+  function arrayToList(arr) {
+    if (arr.length == 0) return null;
+    let nodes = []
+    for (let i = 0; i < arr.length; i++) {
+      let node = {
+        value : arr[i],
+        next : null,
+      }
+      nodes.push(node)
+    }
+    for (let i = 0; i <arr.length - 1; i++) {
+      nodes[i].next = nodes[i + 1]
+    }
+    return nodes[0]
+  }
+//常规
+  function arrayToList2(arr) {
+    let dummy = {
+      value : null,
+      next : null,
+    }
+    let prev = dummy
+    for (let i = 0; i < arr.length; i++) {
+      let node = {
+        value : arr[i],
+        next : null,
+      }
+      prev.next = node
+      prev = node
+    }
+    return dummy.next
+  }
+
+  function arrayToList3(arr) {
+    if (arr.length == 0) {
+      return null
+    }
+    let tailNode = arr.slice(1)
+    let headNode = {
+      value : arr[0],
+      next : null,
+    }
+    headNode.next = arrayToList3(tailNode)
+    return headNode
+  }
+
+  function arrayToList4(arr) {
+    if (arr.length == 0) {
+      return null
+    }
+    return {
+      value : arr[0],
+      next : arrayToList4(arr.slice(1))
+    }
+  }
+//递归
+  function arrayToList5(arr, start = 0) {
+    if (arr.length == start) {
+      return null
+    }
+    return {
+      value : arr[start],
+      next : arrayToList4(arr, start + 1)
+    }
+  }
+
+
+  //常规
+  function listToArray(list) {
+    let arr = []
+    while (list.next != null) {
+      arr.push(list.value)
+      list = list.next
+    }
+    return arr
+  }
+  //递归
+  function listToArray(list) {
+
+    if (list.next == null) {
+      return []
+    }
+    //return [list.value].concat(listToArray(list.next))
+    return [list.value,...(listToArray(list.next))]
+  }
+
+  //链表函数
+  function size (list) {
+    let c = 0
+    while (list != null) {
+      c++
+      list = list.next
+    }
+    return c
+  }
+
+  //递归
+  function size2 (list) {
+    if (!list) {
+      return 0
+    }
+    return 1 + size2(list.next)
+  }
+
+  function insert(list, index, value) {
+    let head = list
+    if (index < 0) {
+      index = 0 
+    }
+    if (index == 0) {
+      return {
+        value : value,
+        next : list,
+      }
+    }
+    for (let i = 1; i < index; i++) {
+      if (list.next == null) {
+        break
+      }
+      list = list.next
+    }
+    //若越界返回null
+    // for (let i = 1; i < index; i++) {
+    //   list = list.next
+    //   if (list == null) {
+    //     return null
+    //   }
+    // }
+    list.next  = {
+      value : value,
+      next : list.next,
+    }
+    return  head
+  }
+
+  function nth (list, index) {
+    for (let i = 0; i < index; i++) {
+      list = list.next
+    }
+    return list.value
+  }
+
+  //递归
+  function nth (list, index) {
+    if (!list) {
+      return undefined
+    }
+    if (index == 0) {
+      return list.value
+    }
+    return nth (list.next, index - 1)
+  }
+</script>
+
+
