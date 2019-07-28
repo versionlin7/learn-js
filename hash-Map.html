@@ -1,0 +1,140 @@
+<script>
+
+class HashMap {
+  constructor(){
+    this.values = new Array(97)
+    this.keys = new Array(97)
+    this.count = 0
+    this.loopCount = 0
+  }
+
+  enlargeSpace() {
+    var keys = this.keys
+    var values = this.values
+
+    var newSize = keys.length * 2
+
+    this.keys = new Array(newSize)
+    this.values = new Array(newSize)
+    this.count = 0
+
+    var oldLoopCount = this.loopCount
+
+    for(var idx in keys) {
+      var key = keys[idx]
+      var val = values[idx]
+      this.set(key, val)
+    }
+
+    this.loopCount = oldLoopCount
+    
+  }
+
+  hash(key) {//'abc'
+
+    var seed = 131313
+    var h = 0
+    for(var i = 0; i < key.length; i++) {
+      h = (h * seed + key.charCodeAt(i)) % (2 ** 31 - 1)
+    }
+    return h % this.keys.length
+
+    var seed = 131
+    var hash = 0
+
+    for (var i = 0; i < key.length; i++) {
+      var hash = (hash * seed + key.charCodeAt(i)) % this.values.length
+    }
+    return hash % this.values.length
+
+    // var weight = [2,5,22,89,53,9,7,3,11,17,37,97,71]
+    // // weight = [1,1,1,4,5,89,53,9,7,3,11,17,37,97,71]
+    // var sum = 0
+    // for(var i = 0; i < key.length; i++) {
+    //   sum += key.charCodeAt(i) * weight[i]
+    // }
+    // return sum % this.values.length
+  }
+
+  f(x) {
+    return x
+  }
+
+  //计算出可能的地址位置，传给action函数，
+  //action函数如果返回false，则不再计算下一个地址
+  addresses(key, action) {
+    var initIdx = this.hash(key)
+
+    var loop = 0
+
+    for (var x = 0; ; x++) {//开放地址法依次尝试idx+f(0),idx+f(1),idx+f(2)
+      loop++
+      var idx = (initIdx + this.f(x)) % this.keys.length
+      if (action(idx) === false) {
+        break
+      }
+    }
+
+    this.loopCount += loop
+
+  }
+
+  set(key, val) {
+    this.addresses(key, idx => {
+      if (idx in this.keys) {//keys的idx位置存在一个key
+        if (this.keys[idx] === key) {//key是这些要找的
+          this.values[idx] = val
+          return false
+        }
+      } else {//keys数组的idx位置不存在一个key
+        this.keys[idx] = key
+        this.values[idx] = val
+        this.count++
+        if (this.count / this.keys.length > 0.7) {
+          this.enlargeSpace()
+        }
+        return false
+      }
+    })
+
+    return this
+  }
+
+  get(key) {
+    var result
+    this.addresses(key, idx => {
+      if (idx in this.keys) {//keys的idx位置存在一个key
+        if (this.keys[idx] === key) {//key是这些要找的
+          result = this.values[idx]
+          return false
+        }
+      }
+    })
+    return result
+  }
+
+  delete(key) {
+    this.addresses(key, idx => {
+      if (idx in this.keys) {//keys的idx位置存在一个key
+        if (this.keys[idx] === key) {//key是这些要找的
+          delete this.values[idx]
+          delete this.keys[idx]
+          this.count--
+          return false
+        }
+      }
+    })
+
+    return this
+  }
+}
+
+
+var m = new HashMap()
+
+for(var i in new Array(65).fill(0)) {
+  m.set(Math.random().toString(36).substr(2, 10), Math.random())
+}
+
+
+</script>

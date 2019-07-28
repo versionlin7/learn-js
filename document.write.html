@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    table {
+      margin: 20px;
+    }
+    div {
+      transform-style: preserve-3d;
+      width: 400px;
+      height: 400px;
+      animation: spin-3d infinite 60s;
+      background-color: rgba(0,0,0,0.5);
+    }
+    @keyframes spin-3d {
+      from {
+        transform: rotatex(0deg) rotatey(0deg);
+      }
+      to {
+        transform: rotatex(360deg) rotatey(3600deg);
+      }
+    }
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: block;
+      width: 5px;
+      height: 5px;
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello world</h1>
+
+  <div>
+    <script>
+      for(var x = -100; x < 100; x+=15) {
+        for(var y = -100; y < 100; y+=15) {
+          var z = x + y
+          document.write('<span style="transform: translate3d('+ x + 'px,'+ y + 'px,' + z + 'px)"></span>')
+        }
+      }
+    </script>
+  </div>
+
+  <footer>footer</footer>
+</body>
+</html>

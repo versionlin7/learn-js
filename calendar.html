@@ -1,0 +1,128 @@
+<script>
+  function isLeapYear(y) {
+    if (y % 400 == 0) {
+      return true
+    }
+
+    if (y % 100 == 0) {
+      return false
+    }
+
+    if (y % 4 == 0) {
+      return true
+    }
+
+    return false
+  }
+
+  function getMonthDays(y, m) {
+    switch(m) {
+      case 1:
+      case 3:
+      case 5:
+      case 7:
+      case 8:
+      case 10:
+      case 12:
+        return 31
+      case 2:
+        if (isLeapYear(y)) {
+          return 29
+        } else {
+          return 28
+        }
+      default:
+        return 30
+    }
+  }
+
+  function weekday(year, month) {
+    var days = 0
+    for(var y = 1; y < year; y++) {
+      if (isLeapYear(y)) {
+        days += 366
+      } else {
+        days += 365
+      }
+    }
+
+    for(var m = 1; m < month; m++) {
+      days += getMonthDays(year, m)
+    }
+
+    return (days + 1) % 7
+  }
+
+  function weekday2(year, month) {
+    var y = year - 1
+    var days = y * 365 + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400)
+
+    for(var m = 1; m < month; m++) {
+      days += getMonthDays(year, m)
+    }
+
+    return (days + 1) % 7
+  }
+</script>
+<script>
+  function monthCal(year, month) {
+    var result = `<table>
+      <caption>` + month + `</caption>
+      <thead>
+        <tr>
+          <td>日</td>
+          <td>一</td>
+          <td>二</td>
+          <td>三</td>
+          <td>四</td>
+          <td>五</td>
+          <td>六</td>
+        </tr>
+      </thead>
+    `
+    var wd = weekday(year, month)
+    result += '<tbody><tr>\n'
+
+    // if (wd) {
+    //   result += '<td colspan="' + wd + '"></td>'
+    // }
+    for (var i = 0; i < wd; i++) {
+      result += '<td></td>\n'
+    }
+
+    var monthDays = getMonthDays(year, month)
+
+    for (var day = 1; day <= monthDays; day++) {
+      result += '<td>' + day + '</td>\n'
+      if ((day + wd) % 7 == 0 && day !== monthDays) {
+        result += '</tr>\n<tr>\n'
+      }
+    }
+
+    result += '</tr></tbody></table>'
+
+    return result
+  }
+  function yearCal(year) {
+    var result = '<div class="calendar">'
+    for(var m = 1; m <= 12; m++) {
+      result += monthCal(year, m)
+    }
+    return result + '</div>'
+  }
+</script>
+<style>
+  * {
+    background-color: rgba(0,0,0,0.1);
+  }
+  .calendar {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: space-between;
+  }
+</style>
+<script>
+  var year = +prompt('请输入年份：')
+  document.write(yearCal(year))
+</script>

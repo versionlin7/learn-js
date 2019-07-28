@@ -1,0 +1,368 @@
+<script>
+var printTree = function(root, width = 0) {
+    function blank(n) {
+        return Array(n).fill(' ')
+    }
+    if (!root) {
+        return []
+    }
+    if (!root.left && !root.right) {
+        return [[...blank(width >> 1), String(root.val), ...blank(width >> 1)]]
+    }
+    if (root.left) {
+        var left = printTree(root.left, width >> 1)
+    }
+    if (root.right) {
+        var right = printTree(root.right, width >> 1)
+    }
+    if (!root.left) {
+        left = Array(right.length).fill(0).map(it => blank(right[0].length))
+    }
+    if (!root.right) {
+        right = Array(left.length).fill(0).map(it => blank(left[0].length))
+    }
+    var sideWidth = Math.max(left[0].length, right[0].length)//半边的宽度
+    var height = Math.max(left.length, right.length)//半边的高度
+    
+    if (left[0].length < sideWidth) {
+        left = printTree(root.left, sideWidth)
+        let padWidth = (sideWidth - left[0].length) / 2
+        left.forEach(line => {
+            line.push(...blank(padWidth))
+            line.unshift(...blank(padWidth))
+        })
+    }
+    
+    if (right[0].length < sideWidth) {
+        right = printTree(root.right, sideWidth)
+        let padWidth = (sideWidth - right[0].length) / 2
+        right.forEach(line => {
+            line.push(...blank(padWidth))
+            line.unshift(...blank(padWidth))
+        })
+    }
+    
+    if (left.length < height) {
+        let padHeight = height - left.length
+        left.push(...Array(padHeight).fill(0).map(it => blank(sideWidth)))
+    }
+    
+    if (right.length < height) {
+        let padHeight = height - right.length
+        right.push(...Array(padHeight).fill(0).map(it => blank(sideWidth)))
+    }
+    
+    var firstLine = blank(sideWidth * 2)
+    firstLine.splice(sideWidth, 0, String(root.val))
+    var result = [firstLine]
+    
+    for (var i = 0; i < height; i++) {
+        result.push([...left[i], ...blank(1), ...right[i]])
+    }
+    return result
+};
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+function lcary2tree(ary) {
+    if (ary.length == 0) {
+      return null
+    }
+    var root = new TreeNode(ary[0])
+    var nodes = [root]
+    for (var i = 1; i < ary.length; i++) {
+      var curr = nodes.shift()
+
+      if (ary[i] != null) {
+        var node = new TreeNode(ary[i])
+        curr.left = node
+        nodes.push(node)
+      } else {
+        curr.left = null
+      }
+
+      i++
+      if (!(i < ary.length)) {
+        break
+      }
+
+      if (ary[i] != null) {
+        var node = new TreeNode(ary[i])
+        curr.right = node
+        nodes.push(node)
+      } else {
+        curr.right = null
+      }
+    }
+    return root
+  }
+
+function print(ary) {
+  return '\n' + printTree(lcary2tree(ary)).map(it => it.join('')).join('\n')
+}
+
+
+pq = new PriorityQueue([l1, l2, l3], it => -it.val)
+
+class PriorityQueue {
+  constructor(initialValues = [], predicate = it => it) {
+    this.elements = []
+    // this.elements = initialValues.slice()
+    // this.heapify()
+    // this.predicate = predicate
+    for (var item of initialValues) {
+      this.push(item)
+    }
+  }
+
+  //将无序的elements就地调整成一个堆
+  heapify() {
+    var startIdx = (this.elements.length - 2) >> 1
+    for(var i = startIdx; i >= 0; i--) {
+      this.heapDown(i)
+    }
+  }
+
+  _swap(i, j) {
+    var t = this.elements[i]
+    this.elements[i] = this.elements[j]
+    this.elements[j] = t
+    console.log(print(this.elements))
+  }
+
+  //从某个位置开始向上调整
+  //适用于堆尾增加了一个元素时
+  heapUp(idx) {
+    if (idx > 0) {
+      var pIdx = (idx - 1) >> 1
+      if (this.elements[idx] > this.elements[pIdx]) {
+        this._swap(idx, pIdx)
+        this.heapUp(pIdx)
+      } else {
+        return
+      }
+    }
+  }
+
+  //从某个位置开始向下调整
+  //适用于堆顶删除了一个元素时
+  //堆尾的元素补在了堆顶时
+  heapDown(currIdx) {
+    if (currIdx < this.elements.length) {
+      var maxIdx = currIdx
+      var lIdx = currIdx * 2 + 1
+      var rIdx = lIdx + 1
+      if (lIdx < this.elements.length && this.elements[lIdx] > this.elements[maxIdx]) {
+        maxIdx = lIdx
+      }
+      if (rIdx < this.elements.length && this.elements[rIdx] > this.elements[maxIdx]) {
+        maxIdx = rIdx
+      }
+      if (currIdx !== maxIdx) {
+        this._swap(currIdx, maxIdx)
+        this.heapDown(maxIdx)
+      }
+    }
+  }
+
+  //删除并返回堆顶元素
+  pop() {
+    var result = this.elements[0]
+    var last = this.elements.pop()
+    if (this.elements.length == 0) {
+      return result
+    }
+
+    this.elements[0] = last
+
+    var currIdx = 0
+
+    while (currIdx < this.elements.length) {
+      var maxIdx = currIdx
+      var lIdx = currIdx * 2 + 1
+      var rIdx = lIdx + 1
+      if (lIdx < this.elements.length && this.elements[lIdx] > this.elements[maxIdx]) {
+        maxIdx = lIdx
+      }
+      if (rIdx < this.elements.length && this.elements[rIdx] > this.elements[maxIdx]) {
+        maxIdx = rIdx
+      }
+      if (currIdx !== maxIdx) {
+        this._swap(currIdx, maxIdx)
+        currIdx = maxIdx
+      } else {
+        break
+      }
+    }
+    return result
+  }
+
+  push2(val) {
+    this.elements.push(val)
+    this.heapUp(this.size - 1)
+  }
+  //往堆中增加一个元素
+  push(val) {
+    this.elements.push(val)
+    var currIdx = this.elements.length - 1
+
+    while (currIdx > 0) {
+      var pIdx = (currIdx - 1) >> 1
+      if (this.elements[currIdx] > this.elements[pIdx]) {
+        this._swap(currIdx, pIdx)
+      } else {
+        break
+      }
+      currIdx = pIdx
+    }
+    return this
+  }
+
+  get size() {
+    return this.elements.length
+  }
+}
+
+
+class Heap extends Array {
+  constructor(compare = (a, b) => a - b, initialValues) {
+    super()
+    this.compare = compare
+  }
+  swap(i, j) {
+    var t = this[i]
+    this[i] = this[j]
+    this[j] = t
+  }
+  heapUp(idx) {
+    var pIdx = (idx - 1) >> 1
+    if (idx > 0 && this.compare(this[idx], this[pIdx]) < 0) {
+      this.swap(idx, pIdx)
+      this.heapUp(pIdx)
+    }
+  }
+  heapDown(idx) {
+    var l = this.length
+    if (idx < l) {
+      var maxIdx = idx
+      var leftIdx = idx * 2 + 1
+      var rightIdx = leftIdx + 1
+      if (leftIdx < l && this.compare(this[leftIdx], this[maxIdx]) < 0) {
+        maxIdx = leftIdx
+      }
+      if (rightIdx < l && this.compare(this[rightIdx], this[maxIdx]) < 0) {
+        maxIdx = rightIdx
+      }
+      if (idx !== maxIdx) {
+        this.swap(idx, maxIdx)
+        this.heapDown(maxIdx)
+      }
+    }
+  }
+  push(val) {
+    super.push(val)
+    this.heapUp(this.length - 1)
+  }
+  peek() {
+    return this[0]
+  }
+  pop() {
+    var result = this[0]
+    var last = super.pop()
+    if (this.length > 0) {
+      this[0] = last
+      this.heapDown(0)
+    }
+    return result
+  }
+}
+
+
+//把数组end以内（不包含end）从堆开始调整成一个正确的堆
+function heapDown(ary, currIdx, end = ary.length) {
+  if (currIdx < end) {
+    var maxIdx = currIdx
+    var lIdx = currIdx * 2 + 1
+    var rIdx = lIdx + 1
+    if (lIdx < end && ary[lIdx] > ary[maxIdx]) {
+      maxIdx = lIdx
+    }
+    if (rIdx < end && ary[rIdx] > ary[maxIdx]) {
+      maxIdx = rIdx
+    }
+    if (currIdx !== maxIdx) {
+      swap(ary, currIdx, maxIdx)
+      heapDown(ary, maxIdx, end)
+    }
+  }
+}
+
+function swap(ary, i, j) {
+  var t = ary[i]
+  ary[i] = ary[j]
+  ary[j] = t
+}
+
+//把一个无序数组就地调整为一个堆
+function heapify(ary) {
+  var startIdx = (ary.length - 2) >> 1
+  for(var i = startIdx; i >= 0; i--) {
+    heapDown(ary, i)
+  }
+  return ary
+}
+
+function heapSort(ary) {
+  heapify(ary)
+  for(var i = ary.length - 1; i > 0; i--) {
+    swap(ary, i, 0)
+    heapDown(ary, 0, i)
+  }
+  return ary
+}
+
+function heapSort2(ary) {
+  var pq = new PriorityQueue()
+  for(var item of ary) {
+    pq.push(item)
+  }
+  ary.length = 0
+  var i = 0
+  while(pq.size) {
+    ary[i++] = pq.pop()
+  }
+  return ary
+}
+
+
+function heapUp(ary, idx, compare = (a, b) => a - b) {
+  var pIdx = (idx - 1) >> 1
+  if (idx > 0 && compare(ary[idx], ary[pIdx]) < 0) {
+    swap(ary, idx, pIdx)
+    heapUp(ary, pIdx)
+  }
+}
+
+function heapDown(ary, idx, compare = (a, b) => a - b) {
+  var l = ary.length
+  if (idx < l) {
+    var maxIdx = idx
+    var leftIdx = idx * 2 + 1
+    var rightIdx = leftIdx + 1
+    if (leftIdx < l && compare(ary[leftIdx], ary[maxIdx]) < 0) {
+      maxIdx = leftIdx
+    }
+    if (rightIdx < l && compare(ary[rightIdx], ary[maxIdx]) < 0) {
+      maxIdx = rightIdx
+    }
+    if (idx !== maxIdx) {
+      swap(ary, idx, maxIdx)
+      heapDown(ary, maxIdx)
+    }
+  }
+}
+
+heapUp(ary, 5, (a, b) => b - a)
+
+</script>

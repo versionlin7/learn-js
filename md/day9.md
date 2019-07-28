@@ -359,7 +359,7 @@
             * 在有长单词的行中显得比较明显
                 - css 并不支持在打断长单词时自动加上连字符-
                     + 据说原因是因为不同的语言的连字符不一样
-                        * p133页
+                        * p133页 
             * 脑洞：单行文字两端对齐
         + 与center元素作用不一样，center会把整个元素都居中，而text-align只居中文字
             * http://jsbin.com/senefeg/1/edit?html,css,output
