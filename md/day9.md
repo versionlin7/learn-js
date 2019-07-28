@@ -31,7 +31,7 @@
         * 色彩空间
         * CMYK(Cany Manganta Yellow blacK)
         * 色域
-        * hsl（色相，饱和度，明度）
+        * hsl（色相，饱和度，明度） 
         * hsla（色相，饱和度，明度，0-1）
         * hexa rgba
         * web safe 颜色，216种
@@ -59,7 +59,8 @@
                 * 指定图片的大小一般肯定是用这个，要不然图片会被变形拉伸，因为图片的尺寸大多数时候是以px来丈量的
                 * 另一个坑，在ie7之前的浏览器，放大时以px指定的文字不会放大，不过已经不在考虑范围了
             * em
-                * 【当前元素】font-size的大小
+                * 【当前元素】font-size的大小相对于父元素
+                * 其他的em相对于font-size
                   ```css
                   <div>
                     <p></p>
@@ -304,7 +305,7 @@
             - 与 text-transform：uppercase
                 + 这个规则是把所有的文字显示成大写
                 * the quick-brown fox
-                * captialize -> The Quick-Brown Fox
+                * capitalize -> The Quick-Brown Fox
                 子属性
 
 
