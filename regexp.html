@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>regexpTest1</title>
+  <style>
+    em{
+      background-color: blueviolet;
+      display: inline-block;
+    }
+    em:empty {
+      display: inline-block;
+      height: 1em;
+      width: 2px;
+      margin-left: -1px;
+      margin-right: -1px;
+      vertical-align: bottom;
+    }
+  </style>
+</head>
+<body>
+  <input type='text' id='regexpTest' onkeyup="process()">
+  <br>
+  <textarea id="matchString" cols="30" rows="5" onkeyup='process()'></textarea>
+  <pre id='result'></pre>
+  <script>
+    function matchRex(re, str) {
+      let result = ''
+      let lastIndex = re.lastIndex
+      var match
+      while(match = re.exec(str)) {
+        result += str.slice(lastIndex, match.index)
+        lastIndex = re.lastIndex
+        if(match[0].length == 0) {
+          re.lastIndex++
+        }
+        result += '<em>'+ match[0] +'</em>'
+      }
+      result += str.slice(lastIndex)
+      return result
+    }
+    var regexpTest = document.getElementById('regexpTest')
+    var matchString = document.getElementById('matchString')
+    var matchResult = document.getElementById('result')
+    
+    function process() {
+      try {
+        var re = new RegExp(regexpTest.value, 'g')
+      }catch(e) {
+        if(e instanceof SyntaxError){
+          matchResult.innerHTML = e.message
+          return
+        }else {
+          throw e
+        }
+      }
+      let str = matchString.value
+      matchResult.innerHTML = matchRex(re, str)
+    }
+  </script>
+</body>
+</html>
