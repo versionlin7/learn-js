@@ -1,0 +1,18 @@
+<script>
+setTimeout(function(){
+  console.log(8)
+},8000)
+//77任务编号
+clearTimeout(77)//取消任务
+//######################
+setTimeout(()=> console.log(1), 0)
+//会先执行调用栈里已有的函数
+console.log(2)
+//=> 2
+//=> 1
+//等同于
+(function() {
+  setTimeout(()=> console.log(1), 0)
+  console.log(2)
+})()
+</script>

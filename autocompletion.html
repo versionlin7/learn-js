@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>autocompletion</title>
+  <style>
+    .autocompletion {
+      position: relative;
+      border:1px solid;
+    }
+    .suggest {
+      position: absolute;
+      margin: 0;
+      top: 100%;
+      width: 200px;
+      height:200px;
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="autocompletion">
+    <input type="text">
+    <ul class="suggest" style="display: none"></ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+    var showTime = 0
+    $('input').on('input', function(e) {
+      var inputEl = this
+      var inputStr = this.value
+      if(inputStr) {
+        var time = Date.now()
+        getSuggestion(inputStr, (suggestions) => {
+          if(time > showTime) {
+            showTime = time
+            var items = $(suggestions).map((idx, suggest) =>{
+              console.log($(`<li><a>${suggest}</a></li>`))
+              return $(`<li><a>${suggest}</a></li>`)[0]
+            }) 
+            console.log(items)
+            $('ul').empty().append(items).show()
+          }
+        })
+      }else {
+        $('ul').empty().hide()
+      }
+
+    }).blur(function(e) {
+      if(!$('.suggest').is(':hover')) {
+        $('.suggest').hide()
+      }
+    }).focus(function(e) {
+      if(this.value) {
+        $('.suggest').show()
+      }
+    })
+
+    $('ul').on('click', 'li a', function(e) {
+      $('input').val(this.textContent)//Jquery调用
+    })
+  
+    function getSuggestion(str, callback) {
+      var suggestions = new Array(3).fill(0).map((_, idx) => idx).map(it => str + it)
+      setTimeout(() => {
+        callback(suggestions)
+      }, 100 + 500 * Math.random())
+    }
+  </script>
+</body>
+</html>

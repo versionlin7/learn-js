@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    li.completed > span{
+      text-decoration: line-through;
+    }
+    ul[data-show="all"] {
+      display: static;
+    }
+    ul[data-show="active"] li.completed {
+      display: none;  
+    }
+    ul[data-show="completed"] li:not(.completed) {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="todo-app"></div>
+  <script>
+    // JSON.parse(localStorage.getItem('todoItems'))
+    var todoItems = JSON.parse(localStorage.todoItems) ||[{
+      done: true,
+      content: 'eat',
+    },{
+      done: false,
+      content: 'drink',
+    },{
+      done: false,
+      content: 'sleep',
+    },{
+      done: true,
+      content: 'breakfast',
+    },]
+    // console.log(todoItems,'+'+JSON.parse(localStorage.getItem(todoItems)),"++" +localStorage.getItem(todoItems))
+    var todoAppEl = document.querySelector('#todo-app')
+
+    var editing = -1
+    var status = 'all'
+
+    function render() {
+      localStorage.todoItems = JSON.stringify(todoItems)
+      // localStorage.setItem('todoItems', JSON.stringify(todoItems))
+      var html = `
+      <input type="checkbox" ${todoItems.every(item => item.done)? 'checked' : ''} class="itemsCheck">
+      <input type="text" class="addItem">
+      <button class="input">input</button>
+      <ul data-show="${status}">
+        ${
+          todoItems.map((item,idx) => {
+            return `
+            <li class="${item.done ? 'completed': ''}" data-idx="${idx}">
+              <input type="checkbox" ${item.done ? 'checked' : ''} class="itemCheck"/>
+              ${
+                editing === idx ?
+                `<input type="text" value="${item.content}"/>`
+                :
+                `<span class="edit">${item.content}</span>`
+              }
+              <button class="delete-item">&times;</button>
+            </li>`
+          }).join('')
+        }
+      </ul>
+      <span>${todoItems.filter(item => !item.done).length} item${todoItems.filter(item => !item.done).length == 1 ? '': 's'} left</span>
+      <span>
+        <label><input type="radio"  name="status" ${status == "all" ? 'checked' : ''} value="all">All<label>
+        <label><input type="radio"  name="status" ${status == "active" ? 'checked' : ''} value="active">Active<label>
+        <label><input type="radio"  name="status" ${status == "completed" ? 'checked' : ''} value="completed">Completed<label>
+        ${
+          todoItems.some(item => item.done) ?
+            `<button class="clear-items">Clear-items</button>` : ''
+        }
+      </span>
+      `
+      todoAppEl.innerHTML = html
+    }
+    render()
+
+    todoAppEl.addEventListener('keyup', e => {
+      if(e.target.matches('input.addItem')) {
+        if(e.keyCode == 13) {
+          let inputValue = e.target.value.trim()
+          if(inputValue) {
+            // console.log(inputValue,e.target.value.trim(), todoItems)
+            todoItems.push({
+              done:false,
+              content:inputValue
+            })
+            render()
+          }
+          document.querySelector('input.addItem').focus()
+        }
+      }
+    })
+    
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('button.input')) {
+        var inputValue = document.querySelector('.addItem')
+        let val = inputValue.value.trim()
+        if(val) {
+          todoItems.push({
+            done:false,
+            content:val,
+          })
+          render()
+          document.querySelector('input.addItem').focus()
+        }
+      }
+    })
+    
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('button.delete-item')) {
+        let idx = parseInt(e.target.parentNode.dataset.idx)
+        todoItems.splice(idx, 1)
+        render()
+      }
+    })
+
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('input.itemCheck')) {
+        let idx = parseInt(e.target.parentNode.dataset.idx)
+        todoItems[idx].done = !todoItems[idx].done
+        render()
+      }
+    })
+
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('input.itemsCheck')) {
+        if(todoItems.every(item => item.done)) {
+          todoItems.forEach(item => item.done = false)
+        }else {
+          todoItems.forEach(item => item.done = true)
+        }
+        render()
+      }
+    })
+
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('input[type=radio]')) {
+        status = e.target.value
+        render()
+      }
+    })
+  
+    todoAppEl.addEventListener('dblclick', e => {
+      if(e.target.matches('span.edit')) {
+        editing = parseInt(e.target.parentNode.dataset.idx)
+        render()
+        let editBox = todoAppEl.querySelector('li input[type=text]')
+        editBox.focus()
+        editBox.selectionStart = editBox.selectionEnd = 999999999999
+      }
+    })
+  
+    todoAppEl.addEventListener('focusout', e => {
+      if(e.target.matches('li input[type=text]')) {
+        if(e.target.value.trim()){
+          todoItems[editing].content = e.target.value.trim()
+        }
+        editing = -1
+        render()
+      }
+    })
+
+    todoAppEl.addEventListener('keyup', e => {
+      if(e.target.matches('li input[type=text]') && e.keyCode == 13) {
+        if(e.target.matches('li input[type=text]')) {
+        if(e.target.value.trim()){
+          todoItems[editing].content = e.target.value.trim()
+        }
+          editing = -1
+          render()
+        }
+      }
+    })
+    
+    todoAppEl.addEventListener('click', e => {
+      if(e.target.matches('button.clear-items')) {
+        todoItems = todoItems.filter(item => !item.done)
+        render()
+      }
+    })
+  </script>
+</body>
+</html>

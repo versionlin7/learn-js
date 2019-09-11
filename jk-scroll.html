@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html {
+      /* scroll-behavior:smooth; */
+    }
+  </style>
+</head>
+<body>
+  <div>facere! Ex nihil, accusamus iste obcaecati facilis exercitationem dolore laudantium quaerat, recusandae ut porro id quasi dolores doloremque nisi, voluptas illo placeat incidunt officia earum voluptatibus. Modi eum eaque quidem, quasi eos similique optio assumenda molestias magnam ratione iure nihil quo repellat nulla voluptatem incidunt minus praesentium, ut ullam id quisquam distinctio. Quae inventore in dolor odit eveniet. Vero dolor praesentium nihil inventore distinctio recusandae deleniti minima, ratione architecto, similique nulla esse enim. Dicta deserunt molestiae impedit praesentium eaque sed corporis a tenetur voluptate illum distinctio, inventore blanditiis pariatur quidem in perspiciatis itaque fuga nemo beatae facere atque expedita necessitatibus labore? Esse natus necessitatibus placeat veritatis pariatur sit? Sint earum eaque fugit repellat non ad! Beatae nam maxime veritatis fugiat esse aliquid vero, hic aperiam, iure fuga necessitatibus suscipit consequuntur eaque delectus facere porro distinctio rem ad minus neque molestias similique illo. Veniam.</div>
+
+
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if(e.key ==  'j') {
+        smoothScrollBy(100, 200)
+      }else if(e.key == 'k') {
+        smoothScrollBy(-100, 200)
+      }
+    })
+    //用duration的时间让window垂直滚动pixel像素
+    function smoothScrollBy(pixel, duration) {
+      var startTime = null
+      var lastTime = null
+      requestAnimationFrame(function a(time) {
+        if(startTime == null) {
+          startTime = time
+        }
+        if(lastTime !== null) {
+          var timeDiff = time - lastTime
+        }
+        lastTime = time
+        var timeRation = timeDiff / duration
+        var pixelRation = timeRation * pixel
+        window.scrollBy(0, pixelRation)
+        if(time - startTime < duration) {
+          requestAnimationFrame(a)
+        }
+      })
+    }
+  </script>
+</body>
+</html>

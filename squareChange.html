@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title> 
+  <style>
+    div {
+      width:40px;
+      height: 40px;
+      background:orange; 
+    }
+  </style>
+</head>
+<body>
+  <div></div>
+  <script>  
+    var lastX = null;
+    var rect = document.querySelector('div')
+    rect.addEventListener("mousedown", function(e) {
+      if(e.which == 1) {
+        lastX = e.pageX
+        window.addEventListener("mousemove", moved);
+        e.preventDefault()
+      }
+    })
+
+    function moved(e) {
+      if(e.which != 1) {
+        window.removeEventListener("mousemove", moved)
+      }else {
+        var diff = e.pageX - lastX
+        var newWidth = Math.max(10, rect.offsetWidth + diff)
+        rect.style.width = newWidth + 'px'
+        lastX = e.pageX
+      }
+    }
+  </script>
+</body>
+</html>

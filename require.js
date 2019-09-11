@@ -4,10 +4,9 @@ function require(path) {
   }
   var fileContent = new readFile(path)
   var moduleFunction = new Function('module, exports', fileContent)
-  
+
   var module = {exports:{}}
   require.moduleCache[path] = module.exports//在创建后直接存起来避免循环依赖爆栈
-
 
   moduleFunction(module, module.exports)
   return module.exports

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <select id="select"></select>
+  <button class="addItem">addItem</button>
+  <br>
+  <textarea name="textarea" id="textarea" cols="25" rows="5"></textarea>
+  <script>
+    var select = document.querySelector('#select')
+    var textarea = document.querySelector('#textarea')
+    var button = document.querySelector('.addItem')
+    
+    var notes = JSON.parse(localStorage.getItem('notes')) || {'learn':'math, english'}
+    
+    for(let item in  notes) {
+      if(notes.hasOwnProperty(item)) {
+        addItem(item)
+      }
+    }
+    textarea.value = notes[select.value]
+    
+    function addItem(item) {
+      var option = document.createElement('option')
+      option.textContent = item
+      select.appendChild(option)
+    }
+    function saveToStorage() {
+      localStorage.setItem('notes', JSON.stringify(notes))
+    }
+    
+    select.addEventListener('change', function() {
+      textarea.value = notes[select.value]
+    })
+    textarea.addEventListener('change', function() {
+      notes[select.value] = textarea.value
+      saveToStorage()
+    })
+    button.addEventListener('click', () => {
+      var name = prompt('Add item')
+      if(!name) return 
+      if(!notes.hasOwnProperty(name)) {
+        notes[name] = " "
+        addItem(name)
+        saveToStorage()
+      }
+      select.value = name
+      textarea.value = notes[name];
+    })
+
+
+
+  </script>
+</body>
+</html>

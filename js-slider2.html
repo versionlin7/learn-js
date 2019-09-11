@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    div.Slider {
+      user-select: none;
+      width: 520px;
+      height: 280px;
+      position: absolute;
+      box-shadow: 0 0 3px 1px;
+      top: 200px;
+      left: 30%;
+      overflow: hidden;
+    }
+    .Slider .img-wrapper {
+      position: absolute;
+      height: 100%;
+      top: 0;
+
+      transition:.4s;
+    }
+    .Slider .img-wrapper img {
+      float: left;
+    }
+    .Slider .indicator-list {
+      list-style-type: none;
+      border-radius: 10px;
+      position: absolute;
+      bottom: 15px;
+      height: 13px;
+      font-size: 0;
+      left: 50%;
+      margin-left: -39px;
+      background-color: rgba(114, 54, 54, 0.3);
+      margin: 0;
+      padding: 2px;
+
+    }
+    .indicator-list li {
+      cursor: pointer;
+      float: left;
+      margin: 2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+    .indicator-list li.active {
+      background-color: orange;
+    }
+    .Slider .prev,
+    .Slider .next {
+      width: 20px;
+      height: 40px;
+      border: 0;
+      background-color: rgba(0,0,0,0.3);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+    .Slider .prev {
+      left: 0;
+    }
+    .Slider .next {
+      right:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="Slider" style="width: 520px; height:280px">
+    
+    <img src="https://img.alicdn.com/tfs/TB1djHMdQL0gK0jSZFtXXXQCXXa-520-280.jpg_q90_.webp" alt="">
+    <img src="https://aecpm.alicdn.com/simba/img/TB1PDs_c7H0gK0jSZPiSuuvapXa.jpg" alt="">
+    <img src="https://img.alicdn.com/simba/img/TB1aLzrbrr1gK0jSZR0SuvP8XXa.jpg" alt="">
+    <img src="https://img.alicdn.com/simba/img/TB1wQyUeoz1gK0jSZLeSuv9kVXa.jpg" alt="">
+    <img src="https://img.alicdn.com/tfs/TB1Gh1dd.D1gK0jSZFGXXbd3FXa-520-280.jpg_q90_.webp" alt="">
+    
+  </div>
+
+  <script>
+    class Slider {
+      constructor(el, options) {
+        this.options = this.getOptions(options)
+        this.el = el
+        this.width = parseInt(el.style.width)
+        this.height = parseInt(el.style.height)
+        this.wrapImg()
+        this.last = -this.width * (this.imgNum + 1) 
+        if(this.options.indicators) {
+          this.makeIndicators()
+          this.indicatorList.addEventListener('click', e => {
+            if(e.target.matches('li')) {
+              let idx = Array.from(this.indicatorList.children).indexOf(e.target)
+              this.imgWrapper.style.left = -(idx + 1) * this.width + 'px'
+              this.setIndicators()
+            }
+          })
+        }
+        if(this.options.buttons) {
+          this.makeButtons()
+          this.nextBth.addEventListener('click', ()=> {
+            this.next()
+          })
+          this.prevBth.addEventListener('click', () => {
+            this.prev()
+          })
+        }
+        if(this.options.autoPlay) {
+          this.makeAutoPlay()
+        }
+
+      }
+
+      makeIndicators(){
+        this.indicatorList = document.createElement('ul')
+        this.indicatorList.className = 'indicator-list'
+        for(let i = 0; i < this.imgNum; i++) {
+          var li = document.createElement('li')
+          li.dataset.item = 'item' + `${i + 1}`
+          li.textContent = `${i + 1}`
+          this.indicatorList.appendChild(li)
+        }
+        this.indicatorList.firstChild.classList.add('active')
+        this.el.appendChild(this.indicatorList)
+      }
+      setIndicators() {
+        this.indicatorList.querySelector('.active').classList.remove('active')
+        this.idx = -(parseInt(this.imgWrapper.style.left) / this.width)
+        if(this.idx == 0) {
+          this.indicatorList.lastChild.classList.add('active')
+        }else if(this.idx == this.imgWrapper.children.length - 1) {
+          this.indicatorList.children[0].classList.add('active')
+        }else {
+          this.indicatorList.children[this.idx - 1].classList.add('active')
+        }
+      }
+
+      makeButtons() {
+        this.prevBth = document.createElement('Button')
+        this.nextBth = document.createElement('Button')
+        this.prevBth.className = 'prev'
+        this.nextBth.className = 'next'
+        this.el.append(this.prevBth, this.nextBth)
+      }
+      next() {
+        if(this.imgWrapper.style.left == this.last + 'px') {
+          this.imgWrapper.style.transition = 'none';
+          this.imgWrapper.style.left = -this.width + 'px'
+        }
+        setTimeout(() => {
+            this.imgWrapper.style.transition='.4s'
+            this.imgWrapper.style.left = (parseInt(this.imgWrapper.style.left)- this.width) + 'px'
+            this.setIndicators()
+        }, 10)
+      }
+      prev() {
+        if(this.imgWrapper.style.left == 0 + 'px') {
+          this.imgWrapper.style.transition = 'none';
+          this.imgWrapper.style.left = this.width + this.last + 'px'
+        }
+        setTimeout(() => {
+          this.imgWrapper.style.transition = '.4s'
+          this.imgWrapper.style.left = (parseInt(this.imgWrapper.style.left) + this.width) + 'px'
+          this.setIndicators()
+        }, 10)
+      }
+
+      makeAutoPlay() {
+        setInterval(() => {
+          this.next() 
+        },1000)
+      }
+
+      wrapImg() {
+        var imgWrapper = document.createElement('div')
+        imgWrapper.className = 'img-wrapper'
+        var imgs = Array.from(this.el.children)
+        this.imgNum = imgs.length
+        imgs.forEach((img, idx)=> {
+          img.style.width = this.width + 'px'
+          img.style.height = this.height + 'px'
+          img.className = idx + 1
+        })
+        var firstImg = imgs[0].cloneNode(true)
+        var lastImg = imgs[imgs.length - 1].cloneNode(true)
+        imgWrapper.append(lastImg)
+        imgWrapper.append(...imgs)
+        imgWrapper.append(firstImg)
+        
+        imgWrapper.style.width = (this.imgNum + 2) * this.width + 'px'
+        imgWrapper.style.left = -this.width + 'px'
+        this.imgWrapper = imgWrapper
+        this.el.appendChild(imgWrapper)
+      }
+
+      getOptions(options) {
+        var defaultOptions = {
+          autoPlay: true,
+          interval: 1000,
+          indicators: true,
+          buttons: true,
+        }
+        return Object.assign({}, defaultOptions, options)
+      }
+
+    }
+    new Slider(document.querySelector('div.Slider'))
+  </script>
+</body>
+</html>

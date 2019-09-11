@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    div.copyright{
+      position: absolute;
+      opacity: 0;
+      color: #fff;
+      font-size: 11px;
+      background: rgba(0,0,0,.8);
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      padding: 8px 10px;
+      top:0;
+      left:0;
+      transition: opacity 1s;
+    }
+    div.map{
+      width: 880px;
+      height: 900px;
+      overflow: hidden;
+      margin:10px;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="map">
+    <img src="https://cdn.pixabay.com/photo/2016/01/09/18/27/journey-1130732_1280.jpg" alt="">
+    <div class="copyright">©版权保护</div>
+  </div>
+  <script>
+    var div = document.querySelector('div.map')
+    var copyright = document.querySelector('div.copyright')
+    // window.addEventListener('click', e => {
+    //   if(!e.target.matches('.copyright')) {
+    //     copyright.style.opacity = 0
+    //     copyright.style.transition = 'opacity 1s'
+    //   }
+    // })
+    window.addEventListener('mousedown', function(e) {
+      div.addEventListener('contextmenu', (e)=> {
+        e.preventDefault()
+        copyright.style.top = e.pageY + 'px'
+        copyright.style.left = e.pageX  + 'px'
+        copyright.style.opacity = 1
+        // copyright.style.transition = 'opacity 1s'
+  
+        copyright.tabIndex = '-1'
+        copyright.addEventListener('blur', e => {
+          copyright.style.opacity = 0
+        })
+        copyright.focus()
+      })
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .dotted {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color:red;
+      border-radius: 100%;
+    }
+    #color {
+      position: absolute;
+      z-index: 9999999;
+    }
+  </style>
+</head>
+<body>
+  <input type="color" id="color" value="#ff0000">
+  <script>
+    var colorInput = document.querySelector('#color')
+    
+    function drawDot(event) {
+      var dot = document.createElement('div')
+      dot.classList.add('dotted')
+      dot.style.left = event.pageX - 5 + 'px'
+      dot.style.top = event.pageY - 5 + 'px'
+      dot.style.backgroundColor = colorInput.nodeValue
+      document.body.appendChild(dot)
+    }
+
+    window.addEventListener('mousedown', e=> {
+      if(e.target == colorInput) {
+        return
+      }
+      drawDot(e)
+      window.addEventListener('mousemove', function f(e) {
+        if(e.buttons == 0) {
+          window.removeEventListener('mousemove', f)
+          return
+        }
+        drawDot(e)
+      })
+    })
+  </script>
+
+</body>
+
+</html>

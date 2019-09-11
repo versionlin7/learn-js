@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    span.cell {
+      width: 10px;
+      height: 10px;
+      display:inline-block;
+      border:.5px solid;
+      vertical-align: top;
+    }
+    .world div:nth-child(1) .cell {
+      border-top: 1px solid;
+    }
+    .world div span.cell:nth-child(1) {
+      border-left: 1px solid;
+    }
+    .world div:nth-last-child(1) .cell {
+      border-bottom: 1px solid;
+    }
+    .world div span.cell:nth-last-child(1) {
+      border-right: 1px solid;
+    }
+    div.world div {
+      height:10px;
+      box-sizing: content-box;
+    }
+    div.world {
+      position: absolute;
+      top:calc(50% - 100px);
+      left: calc(50% - 100px);
+    }
+  </style>
+</head>
+<body>
+  <div class="world"></div>
+  <script>
+    class Snake {
+      constructor(width = 40, height = 40) {
+        this.width = width
+        this.height = height
+        this.world = new Array(height).fill(0).map((row) => Array(width).fill(0) )
+        this.head = this.tail =  this.generateHead()
+        this.generateApple()
+      }
+
+      generateApple() {
+        var x = this.width * Math.random() | 0
+        var y = this.height * Math.random() | 0
+        if(this.world[y][x] !== 'Q') {
+          this.world[y][x] = 'Q'
+          return [x, y]
+        }else {
+          return this.generateApple()
+        }
+      }
+
+      generateHead() {
+        var x = ((this.width / 2) * Math.random() + this.width / 4) | 0
+        var y = ((this.height / 2) * Math.random() + this.height / 4) | 0
+        if(this.world[y][x] == 0) {
+          this.world[y][x] = '>'
+          return [x, y]
+        }else {
+          return this.generateHead()
+        }
+      }
+      
+      
+
+      getNextPos(x, y) {
+        switch(this.world[y][x]) {
+          case 'A':
+            return [x, y - 1]
+          case 'V':
+            return [x, y + 1]
+          case '<':
+            return [x - 1, y]
+          case '>':
+            return [x + 1, y]
+        }
+      } 
+      getPosFlag(x, y) {
+        return this.world[y][x]
+      }
+      setPosFlag(x, y, flag) {
+        return this.world[y][x] = flag
+      }
+
+      next() {
+        var [hx, hy] = this.head
+        var [hnx, hny] = this.getNextPos(hx, hy)
+        var [tx, ty] = this.tail
+        var [tnx, tny] = this.getNextPos(tx, ty)
+
+        var headNextFlag = this.getPosFlag(hnx, hny)
+        
+        var headFlag = this.getPosFlag(hx, hy)
+
+        if(headNextFlag == 'Q') {
+          this.setPosFlag(hnx, hny, headFlag)
+          this.head = [hnx, hny]
+          this.generateApple()
+        }else {
+          this.setPosFlag(hnx, hny, headFlag)
+          this.head = [hnx, hny]
+          this.tail = [tnx, tny]
+          this.setPosFlag(tx, ty, 0)
+        }
+      }
+
+      setHeadDirection(key) {
+        var [x, y] = this.head
+        var headFlag = this.getPosFlag(x, y)
+        if(key == 'A' && headFlag == 'V') return
+        if(key == '<' && headFlag == '>') return
+        if(key == 'V' && headFlag == 'A') return
+        if(key == '>' && headFlag == '<') return
+        this.world[y][x] = key
+      }
+    }
+
+    function domToString (node) {  
+      let tmpNode = document.createElement('div')
+      tmpNode.appendChild(node) 
+      let str = tmpNode.innerHTML
+      tmpNode = node = null; // 解除引用，以便于垃圾回收  
+      return str;  
+    }  
+
+    function renderHTML(s) {
+       return s.world.map((row) => {
+        return `<div class= "row">
+          ${row.map((cell) => {
+            var span = document.createElement('span')
+            span.className = 'cell'
+            switch(cell) {
+              case 'Q':
+                span.style.backgroundColor = 'red'
+                break;
+              case '<': case '>':
+              case 'A': case 'V':
+                span.style.backgroundColor = 'black'
+                break;
+              case 0: 
+                span.style.backgroundColor = 'white'
+                break;
+            }
+            return this.domToString(span)
+            }).join('')
+          }
+        </div>`
+      }).join('')
+    }
+    
+    var s = new Snake(20,20)
+
+    var world = document.querySelector('.world')
+    setInterval(() => {
+      s.next()
+      world.innerHTML = renderHTML(s)
+    },300)
+
+    window.addEventListener('keyup', e => {
+      switch(e.key) {
+        case 'ArrowUp':
+          s.setHeadDirection('A')
+          return
+        case 'ArrowDown':
+          s.setHeadDirection('V')
+          return
+        case 'ArrowLeft':
+          s.setHeadDirection('<')
+          return
+        case 'ArrowRight':
+          s.setHeadDirection('>')
+          return
+      }
+    })
+  </script>
+</body>
+</html>

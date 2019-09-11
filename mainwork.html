@@ -1,0 +1,10 @@
+<script>
+  var worker = new Worker('./worker.js')
+
+  worker.addEventListener('message', e => {
+    console.log(e.data)
+  })
+</script>
+
+
+<!-- worker.terminate()停止worker.js -->

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      user-select: none;
+    }
+    input#color{
+      position: absolute;
+      z-index: 9999999;
+    }
+    div.ele {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+    }
+    .delete{
+      width: 60px;
+      height: 20px;
+      position: absolute;
+      z-index: 99999;
+      left: 60px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <input type="color" value="#ff0000" id="color">
+  <input type="button" class="delete" value="delete">
+  <div class="square">
+    <div class="ele"  style="background-color: blue;left:40px;top:40px;"></div>
+    <div class="ele"  style="background-color: red; left: 60px;top:60px;"></div>
+
+  </div>
+
+  <script>
+    let color = document.querySelector('#color')
+    let last = document.querySelector('.last')
+    let square = document.querySelector('.square')
+    let deleButton = document.querySelector('.delete')
+
+  window.addEventListener('dblclick', function z(e){
+    if(e.target != color && e.target != deleButton){
+        if(e.target.matches('.ele')) {
+          window.removeEventListener('dblclick', z)
+          return
+        }
+      let div = document.createElement('div')
+      div.classList.add('ele')
+      div.style.left = e.pageX - 15 + 'px'
+      div.style.top = e.pageY - 15 + 'px'
+      div.style.backgroundColor = color.value
+      square.appendChild(div)
+    }
+  })
+
+  window.addEventListener('mousedown', e => {
+    if(e.which == 1) {
+      if(e.target.matches('.ele')) {
+        square.appendChild(e.target)
+        let initX = e.offsetX
+        let initY = e.offsetY
+        var g = e.target
+        window.addEventListener("mousemove", function moved(eve){
+          if(eve.which != 1) {
+            window.removeEventListener("mousemove", moved)
+            return
+          }
+          var left = eve.pageX - initX
+          var top = eve.pageY - initY
+          if(left < 30) {
+            left = 0
+          }
+          if(top < 30) {
+            top = 0
+          }
+          if(left > innerWidth -30 -30) {
+            left = innerWidth - 30
+          }
+          if(top > innerHeight - 30 - 30) {
+            top = innerHeight - 30
+          }
+          g.style.left = left + 'px'
+          g.style.top = top + 'px'
+        });
+        e.preventDefault()
+      }
+    }
+  })
+
+  deleButton.addEventListener('click', ()=> {
+    let elements = document.querySelectorAll('.ele')
+    for(let ele of elements) {
+      square.removeChild(ele)
+    }
+  })
+  </script>
+</body>
+</html>

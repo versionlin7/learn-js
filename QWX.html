@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text">
+  <script>
+    var input = document.querySelector('input')
+    input.addEventListener('input', e => {
+      input.value = input.value.replace(/[QWX]/ig, '*')
+    })
+
+    var valueDescriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')
+    Object.defineProperty(input, 'value', {
+      get: function() {
+        return valueDescriptor.get.call(this)
+      },
+      set: function(val) {
+        val = val.replace(/[qwx]/ig, '*')
+        valueDescriptor.set.call(this, val)
+      }
+    })
+
+  </script>
+</body>
+</html>

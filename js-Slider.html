@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .slider {
+      position: relative;
+      width: 400px;
+      height: 300px;
+      border: 1px solid
+    }
+    .imgs {
+      width: 100%;
+      height: 100%;
+
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      transition: 1s;
+    }
+    .indicators {
+      border-radius: 10px;
+      position: absolute;
+      bottom: 15px;
+      height: 13px;
+      text-align: center;
+      font-size: 0;
+      left: 50%;
+      margin-left: -39px;
+      padding: 0px;
+      background-color: rgba(255,255,255,.3);
+    }
+    .indicators li {
+      display: inline-block;
+      margin: 3px;
+      padding-top: 8px;
+      width: 8px;
+      height: 0;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+    li.selected {
+      background: orange;
+    }
+  </style>
+</head>
+<body>
+  <div class="slider">
+    <div class="imgs">
+      <img style="opacity: 1;" src="https://img.alicdn.com/tfs/TB1sjUgdXY7gK0jSZKzXXaikpXa-520-280.jpg_q90_.webp" alt="1">
+      <img src="https://img.alicdn.com/simba/img/TB1gm9jdUY1gK0jSZFMSuuWcVXa.jpg" alt="2">
+      <img src="https://img.alicdn.com/simba/img/TB1pv4tdpP7gK0jSZFjSuw5aXXa.jpg" alt="3">
+      <img src="https://img.alicdn.com/simba/img/TB1MSkJc7T2gK0jSZFkSuwIQFXa.jpg" alt="4">
+      <img src="https://img.alicdn.com/tfs/TB16PQgdXY7gK0jSZKzXXaikpXa-520-280.jpg_q90_.webp" alt="5">
+    </div>
+    <ul class="indicators">
+      <li class="selected">1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+
+    </ul>
+  </div>
+  <script>
+    var slider = document.querySelector('.slider')
+    var img = Array.from(slider.querySelectorAll('.imgs img'))
+    var indicators = Array.from(slider.querySelectorAll('ul.indicators > li'))
+
+    slider.addEventListener('click', e => {
+      let et = e.target
+      if(et.matches('.indicators > li')) {
+        let idx = indicators.indexOf(et)
+        indicators.forEach(it => it.classList.remove('selected'))
+        et.classList.add('selected')
+
+        img.forEach(it => it.style.opacity = 0)
+        img[idx].style.opacity = 1
+      }
+    })
+  </script>
+</body>
+</html>

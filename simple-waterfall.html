@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .window {
+      width:300px;
+      height: 500px;
+      overflow-y:scroll;
+    }
+    .list {
+      position: relative;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      position: absolute;
+      box-sizing: border-box;
+      border: 1px solid;
+      width:100%;
+      height:50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="window">
+    <ul class="list" style="height: 500px">
+      <li></li>
+    </ul>
+  </div>
+  <script>
+    let ul = document.querySelector('.list')
+    let div = document.querySelector('.window')
+    let list = new  Array(20).fill(0).map((_, it) => it)
+    
+    function getItem(start , callback) {
+      setTimeout(() => {
+        callback( new Array(20).fill(0).map((_,it) => it + start))
+      }, 3000);
+    }
+    var load = false//防止数组再次加载
+    function waterFall(startPos) {
+      if(load) {//防止数组再次加载
+        return
+      }
+      let startIdx = Math.floor(startPos / 50)
+      let endIdx = startIdx + 11
+
+      if(endIdx > list.length) {
+        load = true
+        getItem(endIdx, (items) => {
+          list.push(...items)
+          load = false
+          waterFall(startPos)//为在不动滚动条时加载出来
+        })
+        return 
+      }
+      ul.innerHTML = ''
+      for(var i = startIdx; i < endIdx; i++ ) {
+        let li = document.createElement('li') 
+        li.style.top = i * 50 + 'px'
+        li.textContent = list[i]
+        ul.append(li)
+      }
+      ul.style.height = Math.max(parseInt(ul.style.height), endIdx * 50 ) + 'px'
+      console.log(ul.style.height)
+    }
+    waterFall(0)
+    div.addEventListener('scroll', (e) => {
+      waterFall(div.scrollTop)
+    })
+  </script>
+</body>
+</html>

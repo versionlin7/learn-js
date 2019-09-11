@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <img src="" alt="aat">
+    <img src="" alt="bat">
+    <img src="" alt="cat">
+    <img src="" alt="dat">
+  </div>
+    <button onclick="replaceImages()">replaceImages</button>
+<script>
+  function replaceImages() {
+    // debugger;
+    var images = document.getElementsByTagName('img')
+    for(let i = images.length - 1; i >= 0; i--) {
+      var image = images[i]
+      var textNode = document.createTextNode(image.alt)
+      image.parentNode.replaceChild(textNode, image)
+    }
+  }
+
+  function elt(type, ...children) {
+    let node = document.createElement(type)
+    for(child of children) {
+      if(typeof child == 'string') {
+        child = document.createTextNode(child)
+      }
+      node.appendChild(child)
+    }
+    return node
+  }
+
+  function elt2(tagName, attrs) {
+    let node = document.createElement(tagName)
+    for(var attr in attrs) {
+      if(attr != 'children') {
+        let attrVal = attrs[attr]
+        node.setAttribute(attr, attrVal)
+      }
+    }
+    if(attrs.children) {
+      for(let child of attrs.children) {
+        if(typeof child == 'string') {
+          child = document.createTextNode(child)
+        }
+        node.appendChild(child)
+      }
+    }
+    return node
+  }
+
+</script>
+
+</body>
+</html>

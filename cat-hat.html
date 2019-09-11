@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .hat {
+      width: 30px;
+      height: 30px;
+      background-color:red;
+      display: inline-block;
+      position : absolute;
+    }
+
+  </style>
+</head>
+<body>
+    <p style="text-align: center; margin-top:200px; position: relative">
+      <img src = 'https://cdn.v2ex.com/avatar/0e94/733f/374447_large.png?m=1548738797' style="position: absolute">
+      <span class="hat"></span>
+    </p>
+    <script> 
+      var cat = document.querySelector('img')
+      var hat = document.querySelector('.hat')
+
+      var angle = 0, lastTime = null;
+      var angle2 = 0
+
+      requestAnimationFrame(function animate(time) {
+        
+        if(lastTime != null) {
+          angle += (time - lastTime) * 0.001
+          angle2 += (time - lastTime) * 0.01
+        }
+
+        lastTime = time
+
+        var catX = Math.cos(angle) *100 + 1000
+        var catY = Math.sin(angle) * 100 + 300
+        var hatX = Math.cos(angle2) *100 + catX
+        var hatY = Math.sin(angle2) *100 + catY
+        
+        cat.style.left = catX + 'px'
+        cat.style.top = catY + 'px'
+        hat.style.left = hatX + 35 - 15 + 'px'
+        hat.style.top = hatY + 35 - 15 + 'px'
+        requestAnimationFrame(animate)
+      })
+    </script>
+</body>
+</html>
