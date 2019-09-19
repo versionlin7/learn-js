@@ -9,7 +9,6 @@ loadAll(entry)
 
 var outputPackedSourceCode = `
 (function() {
-
   function require(path) {
     if (moduleCache[path]) {
       return moduleCache[path]

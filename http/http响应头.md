@@ -53,6 +53,7 @@ Expires:12/5
 PNG Image
 
 
+204 响应没有任何内容
 401 未授权 UnAuthorized
 403  Forbidden隐藏
 404 未找到 not found
@@ -113,7 +114,7 @@ aaa.json
 ![预检请求](img/预检请求.png)
 ![预检请求2](img/预检请求2.png)
 
-=========
+---
 remote procedure calls RPC远程过程调用
 
 jsonrpc

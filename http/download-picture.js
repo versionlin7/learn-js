@@ -10,7 +10,7 @@ server.on('connection', (conn) => {
     let [method, path, pol] = firstLine.split(' ')
 
     if(method == 'GET') {
-      conn.write('HTTP/1.1 200 OK\r\n')
+      conn.write('HTTP/1.1 200 NOOK\r\n')
       conn.write('Content-Type: text/html; charset=UTF-8\r\n')
       conn.write('Date: '+ new Date().toLocaleDateString()+ '\r\n')
       conn.write('\r\n')

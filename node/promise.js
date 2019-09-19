@@ -15,17 +15,21 @@ Promise.prototype.catch = function(onRejected) {
 Promise.all = function(promises) {
   return new Promise((resolve, reject) => {
     let result = []
-    let resolveCount = 0
-    for(let i = 0; i < promises.length; i++) {
-      Promise.resolve(promises[i]).then(val => {
-        result[i] = val
-        resolvedCount++
-        if(resolveCount == promises.length) {
-          resolve(result)
-        }
-      }, reason => {
-        reject(reason)
-      })
+    let resolveCount = 0 
+    if(promises.length) {
+      for(let i = 0; i < promises.length; i++) {
+        Promise.resolve(promises[i]).then(val => {
+          result[i] = val
+          resolvedCount++
+          if(resolveCount == promises.length) {
+            resolve(result)
+          }
+        }, reason => {
+          reject(reason)
+        })
+      }
+    }else {
+      resolve([])
     }
   })
 }
@@ -123,7 +127,7 @@ Promise.all(urls.map(getJSON))
   pictures.forEach(picture => {
     addHtml(picture)
   })
-})s
+})
 //4. =============并行加载串行显示
 let pictures = Promise.all(urls.map(getJSON))
 pictures.reduce((seq, picture) => {
@@ -133,3 +137,4 @@ pictures.reduce((seq, picture) => {
       addHtml(picture)
     })
 }, Promise.resolve())
+        
