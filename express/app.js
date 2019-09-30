@@ -2,7 +2,7 @@ let express = require('express')
 let server = express()
 
 let port = 9090
-// const static = require('./static.js')
+const static = require('./static.js')
 const bodyParse = require('./body-parse.js')
 
 server.use((req, res, next) => {
@@ -24,7 +24,7 @@ server.use(express.static('./public'))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))//true 扩展url编码
 
-// server.use(static('./public'))
+server.use(static('./public'))
 server.use(bodyParse('json'))
 
 server.use('/foo', f, g, h, i)

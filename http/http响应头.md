@@ -83,10 +83,11 @@ HTTP/1.1 200 OK
 ==========
 
 ![http协议](img/http协议.png)
+
 cors:跨域请求
 Access-Control-Allow-Origin
 
-Cross-site request forgery跨站请求伪造
+CSRF：Cross-site request forgery跨站请求伪造
 CSRF
 防范：1.Referer 2.增加字段key csrf-Token令牌
 
@@ -146,7 +147,6 @@ POST /rpc HTTP/1.1
   method:'deleteUser',
   params:['larry']
 }
-
 
 内容协商
 req:

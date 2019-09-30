@@ -36,3 +36,18 @@ package.json:
 
 >
 
+浏览器格式化工具Intl
+
+Internationalization support ~~i18n
+
+
+
+
+
+worker模块
+
+![1569831206507](D:\CODE\js\node\Modules.assets\1569831206507.png)
+
+![1569831278883](D:\CODE\js\node\Modules.assets\1569831278883.png)
+
+![1569831316312](D:\CODE\js\node\Modules.assets\1569831316312.png)

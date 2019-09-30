@@ -11,3 +11,8 @@ u =  new URL('https://a:b@www.xxx.com:8080/foo/bar?a=b&c=d#foobar')
 ![1568530865169](D:\CODE\js\node\urlModules.assets\1568530865169.png)
 
  
+
+![1568891340029](D:\CODE\js\node\urlModules.assets\1568891340029.png)
+
+![1568950785143](D:\CODE\js\node\urlModules.assets\1568950785143.png)
+

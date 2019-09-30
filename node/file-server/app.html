@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    当前路径
+    <input type="text" id="cwd" name="cwd" value="/"><button id="btn" onclick="chdir()">确定</button>
+    <br>
+    <input type="file" id="uploadInput"/><input type="text" id="uploadFile"/><button onclick="upload()">上传</button>
+    <br>
+    <button onclick="mkdir()">创建文件夹</button>
+    <main id="ls"></main>
+  </div>
+
+  <script>
+    let base = "http://localhost:8000"
+    function get(url) {
+      return new Promise(resolve => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', base + url)
+        xhr.onload = () => {
+          resolve(xhr.responseText)
+
+        }
+        xhr.send()
+      })
+    }
+    function del(url) {
+      return new Promise(resolve => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('DELETE', base + url)
+        xhr.onload = () => {
+          resolve(xhr.responseText)
+
+        }
+        xhr.send()
+      })
+    }
+
+    function ls(path) {
+      return get(path)
+    }
+
+    async function chdir() {
+      let path = cwd.value
+      let files = await ls(path)
+      document.getElementById('ls').innerHTML = `
+        ${files.split('\n').map(it => {
+          return `
+            <div><a href="${it}">${it}</a><button>Delete</button></div>
+          `
+        }).join('')}
+      `
+    }
+    chdir()
+
+    document.querySelector('main')
+      .addEventListener('click', e => {
+        e.preventDefault()
+        if(e.target.matches('a')) {
+          let target = e.target
+          let path = target.textContent
+          if(path.endsWith('/')) {
+            cwd.value += path
+            btn.click()
+          }else {
+            window.open(base + cwd.value + path)
+          }
+        }
+        if(e.target.matches('button')) {
+          let path = cwd.value + e.target.previousSibling.textContent
+          del(path).then(() => {
+            btn.click()
+          })
+        }
+      })
+
+      uploadInput.onchange = e => {
+        uploadFile.value = uploadInput.files[0].name
+      }
+
+      function upload() {
+        let path = cwd.value + uploadFile.value
+        console.log(path)
+        let fr = new FileReader()
+        fr.onload =() => {
+          let xhr = new XMLHttpRequest()
+          xhr.open('PUT', base + path)
+          xhr.onload = () => {
+            btn.click(fr.result)
+          }
+          xhr.send()
+        }
+        fr.readAsArrayBuffer(uploadInput.files[0])
+      }
+
+      function mkdir() {
+        let name = prompt('请输入文件夹名字')
+        let path = cwd.value + name
+
+        let xhr = new XMLHttpRequest()
+        xhr.open('MKCOL', base + path)
+        xhr.onload = () => {
+          btn.click()
+        }
+        xhr.send()
+      }
+  </script>
+</body>
+</html>

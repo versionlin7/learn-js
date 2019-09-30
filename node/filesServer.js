@@ -92,7 +92,8 @@ var mimeMap = {
 
 const server = http.createServer(async (req, res) => {
   console.log(req.method, req.url)
-  let targetPath = decodeURIComponent(path.join(baseDir, req.url))
+  // let targetPath = path.join(baseDir, req.url)
+  let targetPath = decodeURIComponent(path.join(baseDir, req.url))//用于中文路径解码
   
   if(!targetPath.startsWith(baseDir)) {
     res.end()
