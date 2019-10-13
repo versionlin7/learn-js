@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+      li.completed > span{
+        text-decoration: line-through;
+      }
+      ul[data-show="all"] {
+        display: static;
+      }
+      ul[data-show="active"] li.completed {
+        display: none;  
+      }
+      ul[data-show="completed"] li:not(.completed) {
+        display: none;
+      }
+    </style>
+</head>
+<body>
+  <div id="todo-app">
+    <p>vue</p>
+    <div>
+      <input type="checkbox" @click="toggleAll" :checked="todo.every(it => it.done)">
+      <input type="text" @keyup="addTodo">
+    </div>
+    <ul :data-show="category">
+      <li v-for="(thing, index) in todo" :class="thing.done ? 'completed' : 'active'">
+        <input type="checkbox" :checked="thing.done" @click="thing.done = !thing.done">
+        <span @dblclick="slack($event,index)" v-if="editingIndex != index">{{thing.content}}</span>
+        <input @keyup="cancelEdit" @blur="changeThing($event, thing)" @keyup.enter="changeThing($event, thing)" type="text" v-if="editingIndex == index" :value="thing.content">
+        <button @click="todo.splice(index,1) ">delete</button>
+      </li>
+    </ul>
+    <div>
+      <span>{{todo.filter(it => it.done).length}} item{{todo.filter(it => it.done).length > 1 ? 's' : ''}} lift</span>
+      <span>
+        <label ><input type="radio" :checked="category == 'all'" @click="category='all'" name='a'>All</label>
+        <label ><input type="radio" :checked="category == 'active'" @click="category='active'" name='a'>Active</label>
+        <label ><input type="radio" :checked="category == 'completed'" @click="category='completed'" name='a'>Completed</label>
+      </span>
+      <button v-show="todo.filter(it => it.done).length > 0" @click="todo = todo.filter(it => !it.done)">clear completed</button>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue"></script>
+  <script>
+    var app = new Vue({
+      el: '#todo-app',
+      data: {
+        editingIndex: -1,
+        category:'all',
+        todo: [{
+          content:'eat',
+          done:false
+        },{
+          content:'drink',
+          done:true
+        },{
+          content: 'sleep',
+          done:false
+        }]
+      },
+      methods: {
+        addTodo(e) {
+          let text = e.target.value.trim()
+          if(text && e.keyCode == 13) {
+            this.todo.push({
+              content: text,
+              done:false
+            })
+          }
+        },
+        toggleAll(e) {
+          if(this.todo.every(it => it.done)){
+            this.todo.forEach(it => it.done = false);
+          }else {
+            this.todo.forEach(it => it.done = true)
+          }
+        },
+        cancelEdit(e) {
+          if(e.keyCode == 27) {
+            this.editingIndex = -1
+          }
+        },
+        changeThing(e, thing) {
+          if(this.editingIndex == -1) return
+          thing.content = e.target.value.trim(); 
+          this.editingIndex = -1
+        },
+        slack(e, index) {
+          this.editingIndex = index
+          setTimeout(() => {
+            let el = document.querySelector('li input[type=text]')
+            el.focus()
+            el.selectionStart = el.selectionEnd = 999999999999
+          })
+        }
+      }
+    })
+  </script>
+</body>
+</html>

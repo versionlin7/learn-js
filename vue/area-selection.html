@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="./china-city-area-zip.js"></script>
+  <script src="./vue.js"></script>
+</head>
+<body>
+
+    <div id="app">
+
+        <select v-model="selectedProvince">
+          <option v-for="province of provinces" :value="province">{{ province.name }}</option>
+        </select>
+
+        <select v-model="selectedCity">
+          <option v-for="city of selectedProvince && selectedProvince.child" :value="city">{{ city.name }}</option>
+        </select>
+
+        <select v-model="selectedArea">
+          <option v-for="area of selectedCity && selectedCity.child" :value="area">{{ area.name }}</option>
+        </select>
+
+      <hr>
+
+      <!-- <select v-model="selectedProvinceName">
+        <option v-for="province of provinceNames" :value="province">{{ province }}</option>
+      </select>
+      
+      <select v-model="selectedCityName">
+        <option v-for="city of cityNames" :value="city">{{ city }}</option>
+      </select>
+      
+      <select v-model="selectedAreaName">
+        <option v-for="area of areaNames" :value="area">{{ area }}</option>
+      </select> -->
+        
+    </div>
+
+
+  <script>
+
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        selectedProvinceName: '',
+        selectedCityName: '',
+        selectedAreaName: '',
+
+        selectedProvince: null,
+        selectedCity: null,
+        selectedArea: null,
+      },
+      computed: {
+        provinces() {
+          return china_city_area_zip
+        },
+        // provinceNames() {
+        //   return china_city_area_zip.map(it => it.name)
+        // },
+        // cityNames() {
+        //   var selectedProvince = china_city_area_zip.find(it => it.name == this.selectedProvinceName)
+        //   if (selectedProvince) {
+        //     return selectedProvince.child.map(it => it.name)
+        //   } else {
+        //     return []
+        //   }
+        // },
+      //   areaNames() {
+      //     var selectedProvince = china_city_area_zip.find(it => it.name == this.selectedProvinceName)
+      //     if (selectedProvince) {
+      //       var selectCity = selectedProvince.child.find(it => it.name == this.selectedCityName)
+      //       if (selectCity) {
+      //         return selectCity.child.map(it => it.name)
+      //       }
+      //     }
+      //     return []
+      //   },
+      //   foo() {
+      //     return {a: 1}
+      //   }
+      },
+      // beforeCreate(){
+      //   console.log(Date.now())//用于统计把data转为getter/setter的时间
+      // },
+      // created() {
+      //   console.log(Date.now())//用于统计把data转为getter/setter的时间
+      // },
+    })
+    
+
+  </script>
+</body>
+</html>

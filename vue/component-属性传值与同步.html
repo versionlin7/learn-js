@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <date-picker :value="born"></date-picker>
+
+
+    <hr>
+    <input type="date" v-model="date">
+    <button-counter :foo="a"></button-counter>
+
+    <button @click="a.x++">+ {{ a.x }}</button>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+
+    Vue.component('regexp-input', {
+
+    })
+
+    Vue.component('captcha-input', {
+
+    })
+
+    Vue.component('date-picker', {
+      props: {
+        value: {
+          type: Date,
+          default: new Date(),
+        }
+      },
+      template: `
+        <span>
+          请选择日期：
+          <input type="date" :value="date"/>
+        </span>
+      `,
+      data() {
+        return {
+          date: this.value.toLocaleDateString().replace(/\//g, '-')
+        }
+      }
+    })
+
+    Vue.component('button-counter', {
+      inheritAttrs: false,
+      props: {
+        foo: Object,
+        start: {
+          default: 0,
+        },
+        step: {
+          default: 1,
+        }
+      },
+
+      // props: ['start', 'step'],
+      template: `
+        <span class="aaa">
+          <strong @click="foo.x = 9">{{ foo.x }}</strong>
+          <button @click="dec">-</button>
+          <span v-bind="$attrs">{{ count }}</span>
+          <button @click="inc">+</button>
+        </span>
+      `,
+      data() {
+        console.log(this.$attrs)
+        return {
+          count: this.start,
+        }
+      },
+      methods: {
+        dec() {
+          this.count -= this.step
+          this.$emit('increment', this.count)
+        },
+        inc() {
+          this.count += this.step
+          this.$emit('decrement', this.count)
+        }
+      }
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data() {
+
+        return {
+          born: new Date(0),
+          date: '',
+          a: {x:1},
+          counters: [{
+            start: 5, step: 8
+          }, {
+            start: 15, step:3
+          }, {
+            start: 99, step: -1
+          }]
+        }
+      },
+      methods: {
+        counterChanges(cur) {
+          console.log(cur)
+        }
+      }
+    })
+    
+
+  </script>
+</body>
+</html>

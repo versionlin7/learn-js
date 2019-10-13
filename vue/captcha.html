@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- <date-picker :value="born" @input="born = $event"></date-picker> -->
+    <hr>
+    <date-picker v-model="born"></date-picker>
+    <hr>
+    <regexp-input v-model="reg"></regexp-input>
+    <hr>
+    <captcha-input v-model="captcha" @input-complete="send"></captcha-input>
+  </div>
+
+  <script>
+    Vue.component('regexp-input', {
+      props: {
+        value: {
+          type: RegExp,
+          required: true,
+        },
+      },
+      template:`
+        <span style="display:inline-block; border:1px solid;padding:2px">
+          <input type="text" v-model="regtext" @change="changeRegexp">
+          <span>
+            <input type="checkbox" v-for="flag of flags" v-model="flag.value" :title="flag.name" @change="changeRegexp">
+          </span>
+        </span>
+      `,
+      watch: {
+        value(val) {
+          this.regtext = val.source
+          this.flags = this.getFlag()
+        },
+      },
+      methods: {
+        changeRegexp(e) {
+          let regs = new RegExp(this.regtext, this.flags.filter(it => it.value == true).map(it => it.name).join(''))
+          this.$emit('input', regs)
+        },
+        getFlag() {
+          let flags = [{
+            displayName: 'ignoreCase',
+            name:'i',
+            value:false
+          }, {
+            displayName: 'global',
+            name: 'g',
+            value:false
+          }, {
+            displayName: 'multiline',
+            name:'m',
+            value:false
+          }]
+                  
+          flags.forEach(flag => {
+            if(this.value.flags.indexOf(flag.name) >= 0) {
+              flag.value = true
+            }
+          })
+          return flags
+        }
+      },
+      data() {
+        return {
+          regtext: this.value.source,
+          flags:this.getFlag()
+        }
+      }
+    })
+    Vue.component('captcha-input', {
+      template:`
+        <span>
+          <input 
+            style="width:1em; text-align:center;" 
+            type="text" 
+            v-for="(char,idx) of chars" 
+            @keyup="keyup($event,idx)" 
+            v-model="chars[idx]"
+          />
+        </span>
+      `,
+      props:{
+        value: {
+          
+        }
+      },
+      methods: {
+        keyup: function(e,idx) {
+          if(e.key == 'Backspace') {
+            let prev = e.target.previousElementSibling
+            let next = e.target.nextElementSibling
+            if(!next) {
+              if(e.target.value.trim()) {
+                // e.target.value = ''
+                return
+              }else {
+                // prev.value=''
+                prev.focus()
+              }
+            }else if(prev){
+              // prev.value=''
+              prev.focus()
+            }
+            return
+          }
+          if(e.target.value.trim().length) {
+            this.chars[idx] = e.target.value[0]
+            if(e.target.nextElementSibling){
+              e.target.nextElementSibling.focus()
+            }else {
+              this.$emit('input-complete',this.chars.join(''))
+              this.$emit('input',this.chars.join(''))
+            }
+          }
+        },
+      },
+      data() {
+        return {
+          chars:['','','','','','']
+        }
+      }
+    })
+    Vue.component('date-picker', {
+      props: {
+        value: {
+          type: Date,
+          default: new Date()
+        }
+      },
+      template:`
+        <span>
+          请选择日期：
+          <input type="date" :value="date" @change="dateChange"/>
+        </span>
+      `,
+      watch: {
+        value(val) {
+          this.date = val.toLocaleDateString().replace(/\//g,'-')
+        }
+      },
+      methods: {
+        dateChange(e) {
+          console.log(e)
+          this.$emit('input', new Date(e.target.value))
+        }
+      }
+      ,
+      data() {
+        return {
+          date: this.value.toLocaleDateString().replace(/\//g,'-')
+        }
+      }
+    })
+
+
+    var app = new Vue({
+      el:'#app',
+      data: {
+        captcha:'',
+        x: 'sfsDf',
+        reg: /foo/,
+        born: new Date('2018-12-12'),
+        date:'',
+      },
+      watch: {
+        reg(val) {
+          console.log(val)
+        }
+      },
+      methods: {
+        // x(data) {
+        //   console.log(data)
+        //   this.born = data[0]
+        // }
+        send(captcha) {
+          console.log(captcha)
+        }
+      },
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <button-counter @change="counterChanges" v-for="(c, index) in counters" :start="c.start" :step="c.step" :key="index"> </button-counter>
+    <hr>
+    <button-counter :start="8" :step="2"></button-counter>
+    <button-counter :start="8" :step="2"></button-counter>
+    <slider :imgs="['a.png', 'b.png']"> </slider>
+  </div>
+    <script src="vue.js"></script>
+    <script>
+    // Before you create app
+    Vue.component('button-counter', {
+      props: {
+        start: {
+          default: 0
+        },
+        step: {
+          default: 1
+        }
+      },
+      // props:['start','step'],
+      template:`
+        <span>
+          <button @click="dec">-</button>
+          <span>{{count}}</span>
+          <button @click="inc">+</button>
+        </span>
+      `,
+      data() {
+        return {
+          count:this.start,
+        }
+      },
+      methods: {
+        dec() {
+          this.count -= this.step
+          this.$emit('change',this.count)
+        },
+        inc() {
+          this.count += this.step
+          this.$emit('change',this.count)
+        }
+      }
+    })
+    
+    Vue.component('slider',{
+      props: {
+        imgs : {
+
+        }
+      },
+      template:`
+        <div>
+          <span> 
+            正在显示第{{currentSliderIdx}}
+            <img :src="imgs[currentSliderIdx]"/>
+          </span>
+          <button-counter @change="changeSlider"></button-counter>
+        </div>
+      `,
+      data() {
+        return {
+          currentSliderIdx:0,
+        }
+      },
+      methods: {
+        changeSlider(cur) {
+          this.currentSliderIdx = cur
+        },
+      }
+    })
+    
+    
+    
+    var app = new Vue({
+      el: '#app',
+      data: {
+        a:1,
+        counters: [{
+          start:5,
+          step:8
+        }, {
+          start:15,
+          step:3
+        }, {
+          start:99,
+          step:-1
+        }]
+      },
+
+      methods: {
+        counterChanges(cur) {
+          console.log(cur)
+        }
+      }
+    })
+
+  </script>
+</body>
+</html>

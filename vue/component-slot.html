@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <script src="vue.js"></script>
+  <script>
+
+    Vue.component('base-layout', {
+      template: `
+      <div class="container">
+        <header>
+          <slot name="header"></slot>
+        </header>
+        <main>
+          <slot></slot>
+        </main>
+        <footer>
+          <slot name="footer"></slot>
+        </footer>
+      </div>
+      `,
+    })
+
+    Vue.component('slider', {
+      template: `
+        <div class="slider" style="overflow: hidden; position: relative; border: 2px solid; width: 300px; height: 200px">
+          <div class="imgs" :style="{left: -curr * 300 + 'px'}" style="font-size: 0;transition: 1s;position: absolute; height: 100%; width: max-content;">
+            <slot>please set imgs as slider child</slot>
+          </div>
+          <button style="position: absolute; z-index: 5;left:0;" @click="prev">Prev</button>
+          <button style="position: absolute; z-index: 5;right:0;" @click="next">Next</button>
+        </div>
+      `,
+      methods: {
+        prev() {
+          this.curr = (this.curr + 3 - 1) % 3 
+        },
+        next() {
+          this.curr = (this.curr + 3 + 1) % 3 
+        }
+      },
+      data() {
+        return {
+          curr: 0,
+        }
+      }
+    })
+
+    Vue.component('each', {
+      props: ['list'],
+      template: `
+        <div>
+          <slot name="foo" :bar="88"></slot>
+          <ul>
+            <li v-for="(item,idx) of list">
+              <slot :data="item" :idx="idx"></slot>
+            </li>
+          <ul>
+        </div>
+      `
+    })
+
+    Vue.component('some-comp', function(resolve, reject) {
+      console.log('loading some-comp...')
+      setTimeout(() => {
+        resolve({
+          template: '<div>im the Component</div>'
+        })
+      }, 1000)
+    })
+
+    const AsyncComponent = () => ({
+      
+      // 需要加载的组件 (应该是一个 `Promise` 对象)
+      component: new Promise(resolve => {
+        console.log('loading comp')
+        setTimeout(() => {
+          resolve({
+            template: '<div>the async loading component</div>'
+          })
+        },2000)
+      })
+      ,
+      // 异步组件加载时使用的组件
+      loading: {
+        template: '<div>loading...</div>'
+      },
+      // 加载失败时使用的组件
+      error: {
+        template: '<div>error</div>'
+      },
+      // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+      delay: 200,
+      // 如果提供了超时时间且组件加载也超时了，
+      // 则使用加载失败时使用的组件。默认值是：`Infinity`
+      timeout: 3000
+    })
+
+    Vue.component('async-loading-comp', AsyncComponent)
+
+    var app = new Vue({
+      el: '#app',
+      template:`
+        <div id="app">
+
+          <async-loading-comp v-if="show"></async-loading-comp>
+
+          <each :list="['a','b','c']">
+
+            <template v-slot="{data, idx}">
+              <strong>{{ data }} - {{idx}}</strong>
+            </template>
+
+            <template v-slot:foo="fooProps">
+              <em>{{fooProps.bar}}</em>
+            </template>
+
+          </each>
+
+          <hr>
+          <hr>
+
+          <component :is="currComp" ></component>
+
+          <hr>
+
+          <table>
+            <tr>
+              <td></td>
+              <td is="my-cell"></td>
+            </tr>
+          </table>
+          <hr>
+          <hr>
+          <base-layout>
+            <template v-slot:header>
+              this content will replate header slot
+            </template>
+
+            <p>foo
+              <span v-slot:header>sfsdf</span>
+            </p>
+            <p>bar</p>
+
+            <template v-slot:footer>
+              this content will replate footer slot
+            </template>
+          </base-layout>
+
+          <slider></slider>
+
+
+          <slider ref="slider1" autoplay :interval="3000">
+            <img src="https://cn.vuejs.org/images/geekbang-ad.jpg" :foo="curr" alt="" style="width: 300px; height: 200px">
+            <img src="https://cn.vuejs.org/images/geekbang-ad.jpg" alt="" style="width: 300px; height: 200px">
+            <img src="https://cn.vuejs.org/images/geekbang-ad.jpg" alt="" style="width: 300px; height: 200px">
+          </slider>
+
+          <button @click="focus">focus this:</button>
+          <input ref="inputBox" type="text">
+          <span ref="span">1</span>
+          <span ref="span">2</span>
+        </div>
+      `,
+      mounted() {
+        console.log(this.$refs.slider1)
+
+        this.$refs.inputBox.addEventListener()
+
+        this.$refs.slider1.$on('prev', function(e) {
+
+        })
+        this.$refs.slider2.$on('next', function(e) {
+
+        })
+
+      },
+      methods: {
+        focus(e) {
+          console.log(this.$root === app)
+          console.log(this.$refs.span)
+          this.$refs.inputBox.focus()
+        }
+      },
+      data() {
+        return {
+          a: 1,
+          show: false,
+          currComp: 'slider',
+        }
+      },
+    })
+    
+
+  </script>
+</body>
+</html>

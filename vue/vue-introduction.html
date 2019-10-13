@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="todo-app">
+    <p>vue</p>
+    <span>{{count}}</span>
+    <ul>
+      <li v-for="item of list" v-bind:class=" item % 2 ? 'active': null">{{item}}</li>
+    </ul>
+    <button v-on:click="dec()">-</button>
+    <button @click="inc()">+</button>
+    <button @click="addItem()">add item</button>
+  </div>
+  <script src="https://unpkg.com/vue"></script>
+  <script>
+    var app = new Vue({
+      el: '#todo-app',
+      data: {
+        count:0,
+        list:[1,2,3]
+      },
+      methods: {
+        addItem() {
+          this.list.push(ths.count)
+        },
+        dec() {
+          this.count--
+        },
+        inc() {
+          this.count++
+        }
+      }
+    })
+  </script>
+</body>
+</html>

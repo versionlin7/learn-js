@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./Vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    {{ message }}
+  </div>
+  <div id="app-2">
+      <span v-bind:title="message">
+        鼠标悬停几秒钟查看此处动态绑定的提示信息！
+      </span>
+  </div>
+  <div id="app-5">
+      <p>{{ message }}</p>
+      <button v-on:click="reverseMessage">反转消息</button>
+      <button v-on:click="getFun()">{{i}}</button>
+      <button v-on:click="getFun">{{i}}</button>
+  </div>
+  <div id="app-6">
+      <p>{{ message }}</p>
+      <input v-model="message">
+  </div>
+    
+  <script src="./index.js"></script>
+</body>
+</html>
