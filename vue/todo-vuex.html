@@ -110,7 +110,8 @@
     template:`
       <li>
         <input type="checkbox" :checked="todo.done"  @click="toggleState">
-        <span :style="todo.done ? 'text-decoration:line-through;':''">{{todo.content}}</span>
+        <span :style="todo.done ? 'text-decoration:line-through;':''" v-if="editingIndex != index>{{todo.content}}</span>
+        <input @keyup="cancelEdit" @blur="changeThing($event, thing)" @keyup.enter="changeThing($event, thing)" type="text" v-else :value="todo.content">
         <button @click="deleteItem">-</button>
       </li>
     `,
@@ -120,7 +121,8 @@
       }, 
       toggleState() {
         this.$store.commit('toggleTodoState',this.todo)
-      }
+      },
+      
     }
   })
 

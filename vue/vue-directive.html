@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    body {
+      font-family: consolas;
+    }
+    .string {
+      color: red;
+    }
+    .number {
+      color: blue;
+    }
+    .boolean {
+      color: blue;
+    }
+    .null {
+      color: grey;
+    }
+    .toggle {
+      cursor: pointer;
+    }
+    .key {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+
+    <button @click="show = !show">{{ 'toggle' | uppercase(1,2) }}</button>
+
+    <input v-if="show" v-focus />
+    
+    <input type="text" v-datepicker />
+
+    <date-picker></date-picker>
+
+    <slider></slider>
+
+    <div style="width: 200px;height: 50px;overflow: scroll;" v-scrollpos="x">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam maiores est dolor a repellendus, corporis quisquam eos corrupti culpa sunt alias quasi sapiente. Exercitationem ipsum similique, est necessitatibus nobis maiores?
+    </div>
+
+    <anchor-heading></anchor-heading>
+
+  </div>
+
+  <script src="vue.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>
+
+    Vue.component('anchor-heading', {
+      // template: `
+      //   <div></div>
+      // `,
+      render: function(createElement) {
+        return createElement('h' + this.level, {}, this.a)
+      },
+      data() {
+        return {
+          a: 1
+        }
+      }
+    })
+
+    Vue.filter('uppercase', function(input,a,b) {
+      return input.toUpperCase()
+    })
+
+    Vue.directive('scrollpos', {
+      update(el, binding) {
+        el.scrollTop = binding.value
+      },
+    })
+
+    Vue.component('slider', {
+      template: `<div ref="el"></div>`,
+      mounted() {
+        $(this.$refs.el).slider()
+      }
+    })
+
+    Vue.component('date-picker', {
+      template: `<input ref="box" type="text" />`,
+      mounted() {
+        $(this.$refs.box).datepicker()
+      }
+    })
+
+    Vue.directive('datepicker', {
+      bind(el) {
+        $(el).datepicker()
+      }
+    })
+
+    Vue.directive('focus', {
+      bind() {
+
+      },
+      inserted(el) {
+        el.focus()
+      },
+      update() {
+
+      },
+      componentUpdated() {
+
+      },
+      unbind() {
+
+      }
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          x: 0,
+          show: true,
+          data4: 2
+        }
+      }
+    })
+    
+
+  </script>
+</body>
+</html>

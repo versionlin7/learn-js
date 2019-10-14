@@ -24,8 +24,11 @@
     `,
     methods: {
       deleteItem(todo) {
-        // this.todos.splice(item,1)
-        this.todos = this.todos.filter(it => it !== todo)
+        this.todos.forEach((it,idx) => {
+          if(it == todo)
+          this.todos.splice(idx,1)
+        })
+        // this.todos = this.todos.filter(it => it !== todo)
       },
       toggleState(todo) {
         todo.done = !todo.done
@@ -39,12 +42,12 @@
         }
       }
     },
-    watch: {
+    // watch: {
       
-      todos: function() {
-        this.$emit('input',this.todos)
-      }
-    },
+    //   todos: function() {
+    //     this.$emit('input',this.todos)
+    //   }
+    // },
     data() {
       return {
         todos:this.value
