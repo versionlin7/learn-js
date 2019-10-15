@@ -62,8 +62,8 @@
   Vue.component('todo-list', {
     template:`
       <ul>
-        <todo-item
-          v-for="(todo,idx) of todos" :todo="todo"
+        <todo-item 
+          v-for="(todo,idx) of todos" :todo="todo" :idx="idx"
           :key="idx"
         >
         </todo-item>
@@ -106,12 +106,12 @@
   // }
 
   Vue.component('todo-item', {
-    props:['todo'],
+    props:['todo','idx'],
     template:`
-      <li>
+      <li >
         <input type="checkbox" :checked="todo.done"  @click="toggleState">
-        <span :style="todo.done ? 'text-decoration:line-through;':''" v-if="editingIndex != index>{{todo.content}}</span>
-        <input @keyup="cancelEdit" @blur="changeThing($event, thing)" @keyup.enter="changeThing($event, thing)" type="text" v-else :value="todo.content">
+        <span @dblclick="editIndex($event,idx)" :style="todo.done ? 'text-decoration:line-through;':''" v-if="editing != idx">{{todo.content}}</span>
+        <input type="text" v-else :value="todo.content" >
         <button @click="deleteItem">-</button>
       </li>
     `,
@@ -122,7 +122,19 @@
       toggleState() {
         this.$store.commit('toggleTodoState',this.todo)
       },
-      
+      editIndex(el,idx) {
+        // console.log(this.$refs)
+
+        setTimeout(() => {
+          document.querySelector('li input[type=text]').focus()
+        })
+
+        this.$store.commit('editIndex', this.idx)
+      }
+      // ...Vuex.mapMutations(['editIndex'])
+    },
+    computed: {
+      ...Vuex.mapGetters(['editing'])
     }
   })
 
@@ -176,6 +188,7 @@
   ;(function () {
     var store = new Vuex.Store({
       state: {
+        editingIndex: -1,
         category:'all',
         todos: [{
           done: true,
@@ -226,6 +239,12 @@
         },
         completed(state) {
           state.category = 'completed'
+        },
+        editIndex(state, idx) {
+          state.editingIndex = idx
+
+          
+          // this.$refs.idx.focus()
         }
       },
       getters: {
@@ -240,6 +259,9 @@
         },
         category(state) {
           return state.category
+        },
+        editing(state) {
+          return state.editingIndex
         }
       },
 

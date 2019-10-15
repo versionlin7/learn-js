@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="./react.js"></script>
+    <script src="./react-dom.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="./babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="root1"></div>
+    <div id="root2"></div>
+    <script type="text/babel">
+
+      // ReactDOM.render(
+      //   <h1>Hello, world!</h1>,
+      //   document.getElementById('root')
+      // ); 
+
+
+    function App(props) {
+      console.log(props.name)
+      return (
+        <div className="App">
+          <header className="App-header">
+            <h2>hello react</h2>
+            <p>
+              Edit <code>src/App.js</code> and save to reload.
+            </p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Learn React
+            </a>
+          </header>
+        </div>
+      );
+    }
+    class Clock extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {date: new Date()};
+      }
+
+      componentDidMount() {
+        this.timerID = setInterval(
+          () => this.tick(),
+          1000
+        );
+      }
+
+      componentWillUnmount() {
+        clearInterval(this.timerID);
+      }
+
+      tick() {
+        this.setState({
+          date: new Date()
+        });
+      }
+
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+          </div>
+        );
+      }
+    }
+
+    class TodoApp extends React.Component {
+      constructor(props) {
+        super(props)
+        this.state = {
+          flag:true,
+          category:'all',
+          todos:[{
+            content:'eat',
+            done:false
+          },{
+            content:'sleep',
+            done:true
+          },{
+            content:'test',
+            done:false
+          }],
+          show:'',
+        }
+      }
+
+      //class filed
+      leftCount = () => {
+        return this.state.todos.filter(it => !it.done).length
+      }
+
+      isAllSelected = () => {
+        return this.state.todos.every(it => it.done)
+      }
+      hasCompleted() {
+        return this.state.todos.some(it => it.done)
+      }
+      deleteTodo(todo) {
+        this.setState({
+          todos: this.state.todos.filter(it => it !== todo)
+        })
+      }
+      clearCompleted = () => {
+        this.setState({
+          todos:this.state.todos.filter(it => !it.done)
+        })
+
+      }
+      toggleTodo(todo) {
+
+        // todo.done = !todo.done
+        // this.forceUpdate()
+
+        todo.done = !todo.done
+        this.setState({})
+        // this.setState({
+        //   todos: this.state.todos.map(it => {
+        //     if(it === todo) {
+        //       return {
+        //         ...it,
+        //         done: !it.done
+        //       }
+        //     }else {
+        //       return it
+        //     }
+        //   })
+        // })
+      }
+      toggleAllSelection = () => {
+        if(this.isAllSelected()) {
+          this.state.todos.forEach(it => {
+            it.done = false
+          });
+        }else {
+          this.state.todos.forEach(it => {
+            it.done = true
+          })
+        }
+        this.setState({})
+      }
+      all = () => {
+        this.state.category = 'all'
+        this.setState({})
+      }
+      active = () => {
+        this.state.category = 'active'
+        this.setState({})
+      }
+      completed = () => {
+        this.state.category = 'completed'
+        this.setState({})
+      }
+      changeFlag = (e, todo) => {
+        e.target.parentNode.innerHtml = `
+          <input type="text" defaultValue={todo.content}  />
+        `
+        this.setState({})
+      }
+      changeCategory = () => {
+        let a
+        if(this.state.category == 'all') {
+          a = this.state.todos
+        }else if(this.state.category == 'active') {
+          a = this.state.todos.filter(it => !it.done)
+        }else {
+          a = this.state.todos.filter(it => it.done)
+        }
+        
+        // debugger
+        return a.map((todo,idx) => {
+          return  (
+            <li key={idx}>
+              <input type="checkbox" checked={todo.done} onChange={() => this.toggleTodo(todo)} />
+                <span>
+                  <span onDoubleClick={(e) => this.changeFlag(e, todo)}>{todo.content}</span>
+                </span>
+              <button onClick={() => this.deleteTodo(todo)}>-</button>
+            </li>
+          )
+        })
+      }
+      clearSelection = () => {
+        this.state.todos = this.state.todos.filter(it => !it.done)
+        this.setState({})
+      }
+
+      render() {
+        return (
+          <div>
+            <h1>Todo</h1>
+            <div>
+              <input type="checkbox"  checked={this.isAllSelected()} onChange={this.toggleAllSelection} />  
+              <input type="text" />
+            </div>
+            <ul>
+              {
+                this.changeCategory()
+              }
+            </ul>
+            <div>
+              <span>{this.leftCount()} item{this.leftCount() > 1 ? 's' : ''} left</span>
+              <span>
+                <label ><input type="radio" checked={this.state.category == 'all'} onChange={this.all} />All</label>
+                <label ><input type="radio" checked={this.state.category == 'active'} onChange={() => this.active()} />Active</label>
+                <label ><input type="radio" checked={this.state.category == 'completed'} onChange={() => this.completed()} />Completed</label>
+              </span>
+              {
+                this.hasCompleted() &&
+                <button onClick={this.clearSelection}>Clear Completed</button>
+                // this.hasCompleted() ?
+                // <button>Clear Completed</button>
+                // :
+                // null
+              }
+            </div>
+          </div>
+        )
+      }
+    }
+    
+    ReactDOM.render(
+  
+      <App name="aas" value="123"/>,
+      document.getElementById('root')
+      );
+    ReactDOM.render(
+  
+      <TodoApp />,
+      document.getElementById('root1')
+      );
+    ReactDOM.render(
+  
+      <Clock />,
+      document.getElementById('root2')
+      );
+    </script> 
+
+    <!--
+    //   Note: this page is a great way to try React but it's not suitable for production.
+    //   It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+    //   Read this section for a production-ready setup with JSX:
+    //   https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+    //   In a larger project, you can use an integrated toolchain that includes JSX instead:
+    //   https://reactjs.org/docs/create-a-new-react-app.html
+
+    //   You can also use React without JSX, in which case you can remove Babel:
+    //   https://reactjs.org/docs/react-without-jsx.html
+    // -->
+  </body>
+</html>
