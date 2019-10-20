@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="babel.min.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      var ary = []
+
+      function Welcome(props) {
+        var ref = React.createRef()
+
+        var f = () => {
+          console.log(1)
+        }
+
+        return <div onClick={f} ref={ref}>Welcome!</div>
+      }
+
+      class DatePicker extends React.Component {
+        constructor(props) {
+          super(props)
+
+          debugger
+          
+          this.boxRef = React.createRef()
+
+          this.state = {
+            count: 0,
+          }
+        }
+
+        inc = () => {
+          this.setState({
+            count: this.state.count + 1
+          })
+        }
+
+        componentDidMount() {
+          $(this.boxRef.current).datepicker()
+        }
+
+        refHandle = (el) => {
+          console.log(1)
+          this.box = el
+        }
+
+        render() {
+          
+          this.boxRef = {
+            _current: null,
+            set current(el) {
+              console.log(1, el)
+              this._current = el
+            },
+            get current() {
+              return this._current
+            }
+            this.refs.box -> 
+          }
+
+          return (
+            <div>
+
+              <p onClick={this.inc}>{this.state.count}</p>
+              <input type="text" ref={this.boxRef} />
+            </div>
+          )
+        }
+      }
+
+      var ref1 = React.createRef()
+
+      ReactDOM.render(
+        <div>
+          <DatePicker ref={ref1}/>
+        </div>,
+        document.querySelector('#root')
+      )
+    
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>

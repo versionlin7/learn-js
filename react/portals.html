@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+      class HasPortal extends React.Component {
+        constructor(props) {
+          super(props)
+
+          this.state = {
+            a: 1,
+            showWelcome: true
+          }
+        }
+
+        showingDeletePanel = () => {
+          this.setState({
+            deleting: true
+          })
+        }
+
+        createPortalPanel() {
+          return ReactDOM.createPortal((
+            <div>
+              are you sure to delete?
+              <button onClick={this.handleDelete}>delete</button>
+              <button onClick={this.handleCalcel}>calcel</button>
+            </div>
+          ), document.body)
+        }
+
+        render() {
+          return (
+            <div onClick={() => console.log(1)}>
+              {this.state.deleting &&
+                this.createPortalPanel()
+              }
+              <button onClick={this.showingDeletePanel}>delete</button>
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus natus libero magni recusandae doloremque, labore, eius ex culpa cupiditate, nobis dolore! Praesentium maiores numquam natus odit. Incidunt possimus ut autem?</p>
+            </div>
+          )
+        }
+      }
+
+
+
+
+
+      ReactDOM.render(<HasPortal/>,
+        document.querySelector('#root')
+      )
+    
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>

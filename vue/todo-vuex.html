@@ -111,7 +111,7 @@
       <li >
         <input type="checkbox" :checked="todo.done"  @click="toggleState">
         <span @dblclick="editIndex($event,idx)" :style="todo.done ? 'text-decoration:line-through;':''" v-if="editing != idx">{{todo.content}}</span>
-        <input type="text" v-else :value="todo.content" >
+        <input ref="edit" type="text" v-else :value="todo.content"  @keyup.enter="changeThing($event, todo)">
         <button @click="deleteItem">-</button>
       </li>
     `,
@@ -122,11 +122,15 @@
       toggleState() {
         this.$store.commit('toggleTodoState',this.todo)
       },
+      changeThing(e,todo) {
+        this.$store.commit('changeTodo', {e,todo})
+      },
       editIndex(el,idx) {
         // console.log(this.$refs)
 
         setTimeout(() => {
-          document.querySelector('li input[type=text]').focus()
+          // document.querySelector('li input[type=text]').focus()
+          this.$refs.edit.focus()
         })
 
         this.$store.commit('editIndex', this.idx)
@@ -227,6 +231,11 @@
               it.done = true
             })
           }
+        },
+        changeTodo(state, val) {
+          if(state.editingIndex == -1) return
+          val.todo.content = val.e.target.value.trim(); 
+          state.editingIndex = -1
         },
         clearCompleted(state) {
           state.todos = state.todos.filter(it => !it.done)

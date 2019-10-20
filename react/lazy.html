@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+
+  const component = React.lazy(() => import('./'))
+
+
+  function lazy(f) {
+  return class Lazy extends React.Component {
+    constructor(props) {
+      super(props)
+
+      this.state = {
+        loading: true
+      }
+
+      f().then(Comp => {
+        this.Comp = Comp
+        this.setState({
+          loading: false
+        })
+      })
+    }
+
+    render() {
+      if (this.state.loading) {
+        return null
+      } else {
+        var Comp = this.Comp
+        var {children, ...props} = this.props
+        return <Comp {...props}>{children}</Comp>
+      }
+    }
+  }
+}
+  
+  </script>
+</body>
+</html>

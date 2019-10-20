@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function lazy(f) {
+        class Lazy extends React.Component {
+          constructor(props) {
+            super(props)
+
+            this.state = {
+              loading: true
+            }
+
+            f().then(Comp => {
+              this.Comp = Comp
+              this.setState({
+                loading: false
+              })
+            })
+          }
+
+          render() {
+            if (this.state.loading) {
+              return <span style={{color:'red'}}>loading...</span>
+            } else {
+              var Comp = this.Comp
+              var {children, forwardRef, ...props} = this.props
+              return <Comp ref={forwardRef} {...props}>{children}</Comp>
+            }
+          }
+        }
+
+        return React.forwardRef((props, ref) => {
+          return <Lazy {...props} forwardRef={ref}/>
+        })
+      }
+
+      var SomeLazyComp = lazy(() => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(class Foo extends React.Component {
+              render() {
+                return <div>i'm foo</div>
+              }
+            })
+          }, 1000)
+        })
+      })
+
+      class App extends React.Component {
+        constructor(props) {
+          super(props)
+          
+          window.ref1 = React.createRef()
+
+          this.state = {
+            show: false
+          }
+        }
+
+        handleShow = () => {
+          this.setState({
+            show: true
+          })
+        }
+
+        render() {
+          return (
+            <div>
+              <p onClick={this.handleShow}>lorem</p>
+              {this.state.show &&
+                <SomeLazyComp ref={window.ref1}/>
+              }
+            </div>
+          )
+        }
+      }
+
+      ReactDOM.render(
+        <App>
+        </App>,
+        document.querySelector('#root')
+      )
+    
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>

@@ -30,8 +30,8 @@
     <ul :data-show="category">
       <li v-for="(thing, index) in todo" :class="thing.done ? 'completed' : 'active'">
         <input type="checkbox" :checked="thing.done" @click="thing.done = !thing.done">
-        <span @dblclick="slack($event,index)" v-if="editingIndex != index">{{thing.content}}</span>
-        <input @keyup="cancelEdit" @blur="changeThing($event, thing)" @keyup.enter="changeThing($event, thing)" type="text" v-if="editingIndex == index" :value="thing.content">
+        <span @dblclick="slack($event,index)" v-show="editingIndex != index">{{thing.content}}</span>
+        <input ref="edit" @keyup="cancelEdit" @blur="changeThing($event, thing)" @keyup.enter="changeThing($event, thing)" type="text" v-show="editingIndex == index" :value="thing.content">
         <button @click="todo.splice(index,1) ">delete</button>
       </li>
     </ul>
@@ -63,6 +63,7 @@
           done:false
         }]
       },
+
       methods: {
         addTodo(e) {
           let text = e.target.value.trim()
@@ -92,11 +93,16 @@
         },
         slack(e, index) {
           this.editingIndex = index
-          setTimeout(() => {
-            let el = document.querySelector('li input[type=text]')
-            el.focus()
-            el.selectionStart = el.selectionEnd = 999999999999
-          })
+          console.log(this.$refs.edit[index]) 
+          setTimeout(() =>{this.$refs.edit[index].focus()})
+          this.$refs.edit[index].focus()
+          // this.$refs.edit[index].selectionStart = this.$refs.edit[index].selectionEnd = 99999
+          // console.log(this.$refs.edit[index].selectionStart)
+          // setTimeout(() => {
+          //   let el = document.querySelector('li input[type=text]')
+          //   el.focus()
+          //   el.selectionStart = el.selectionEnd = 999999999999
+          // })
         }
       }
     })

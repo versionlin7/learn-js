@@ -97,8 +97,8 @@
     template:`
       <li>
         <input type="checkbox" :checked="todo.done" @click="$emit('toggle-state')">
-        <span>{{todo.content}}</span>
-        <button @click="$emit('delete')">-</button>   
+        <span >{{todo.content}}</span>
+        <button ref="todo.content" @click="$emit('delete')">-</button>   
       </li>
     `
   })
@@ -125,7 +125,7 @@
         
       },
       updated() {
-        console.log('sd')
+        console.log(this.$refs)
       },
       data: {
         todos:[{
