@@ -24,5 +24,6 @@
     "activityBar.background": "#2C300D",
     "titleBar.activeBackground": "#3D4312",
     "titleBar.activeForeground": "#FAFBF2"
-  }
+  },
+  "git.ignoreLimitWarning": true
 }

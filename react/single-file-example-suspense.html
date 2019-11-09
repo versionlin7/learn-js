@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { Suspense, useState } = React
+
+      function getUserInfo(id) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve({
+              id,
+              name: 'damiao'
+            })
+          }, 1000)
+        })
+      }
+
+      function createFetcher(f) {
+        var cache = {}
+
+        return {
+          read(arg) {
+            if (cache[arg]) {
+              return cache[arg]
+            } else {
+              throw f(arg).then(val => {
+                cache[arg] = val
+              })
+            }
+          }
+        }
+      }
+
+      var userFetcher = createFetcher(getUserInfo)
+
+      function UserInfo(props) {
+        var info = userFetcher.read(props.id)
+
+        return (
+          <div>
+            <h2>User Info</h2>
+            <Suspense fallback={<div>loading</div>}>
+              <div>{info.name}</div>
+            </Suspense>
+          </div>
+        )
+      }
+
+      // class Suspense extends React.Component {
+      //   constructor(props) {
+      //     super(props)
+
+      //     this.state = {
+      //       hasError: false
+      //     }
+      //   }
+
+      //   componentDidCatch(e, ...args) {
+      //     console.log(e, ...args)
+      //     if (e.promise instanceof Promise) {
+      //       this.setState({
+      //         hasError: true
+      //       })
+
+      //       e.promise.then(() => {
+      //         console.log('ok')
+      //         this.setState({
+      //           hasError: false
+      //         })
+      //       })
+
+      //     } else {
+      //       throw e
+      //     }
+      //   }
+
+      //   render() {
+      //     if (!this.state.hasError) {
+      //       return this.props.children
+      //     } else {
+      //       return this.props.fallback
+      //     }
+      //   }
+      // }
+
+      function App() {
+        return (
+          <div>
+            <h1>App</h1>
+            <Suspense fallback={<div>loading...</div>}>
+              <UserInfo id={3}/>
+              <UserInfo id={4}/>
+              <UserInfo id={5}/>
+            </Suspense>
+          </div>
+        )
+      }
+
+      var Todo = memo(function Todo() {
+        console.log('todo render')
+        return <div>foo</div>
+      })
+
+      function memo(FC, isEqual) {
+        return class Comp extends React.Component {
+          constructor(props) {
+            super(props)
+          }
+          shouldComponentUpdate(newProps) {
+            if (isEqual(this.props, newProps)) {
+              return false
+            } else {
+              return true
+            }
+          }
+          render() {
+            return <FC {...this.props}/>
+          }
+        }
+      }
+
+      function App2() {
+        var [a, seta] = useState(1)
+
+        return <div onClick={() => seta(a + 1)}>
+          aaa
+          <Todo id={a}></Todo>
+        </div>
+
+      }
+
+      ReactDOM.render(
+        <App2/>,
+        document.querySelector('#root')
+      )
+    
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>

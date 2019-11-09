@@ -1,5 +1,5 @@
 import { createStore } from 'redux'
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 
 var state = {
   showing: "all",
@@ -16,6 +16,7 @@ var state = {
 };
 
 var mutations = {
+
   addTodo: produce((state, action) => {
     state.todos.push({
       content: action.todoText

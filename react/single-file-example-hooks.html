@@ -76,10 +76,12 @@
             setHeight(window.innerHeight)
           }
           window.addEventListener('resize', handle)
+          console.log('on')
           return () => {
             window.removeEventListener('resize', handle)
+            console.log('off')
           }
-        }, [])
+        },[])
 
         return {
           width, height
