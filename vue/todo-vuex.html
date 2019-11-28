@@ -232,6 +232,16 @@
             state.todos.forEach(it => {
               it.done = false
             })
+          }eate.todos = state.todos.filter(it => it !== todo)
+        },
+        toggleTodoState(state, todo) {
+          todo.done = !todo.done
+        },
+        toggleSelectAll(state) {
+          if(state.todos.every(it => it.done)){
+            state.todos.forEach(it => {
+              it.done = false
+            })
           }else {
             state.todos.forEach(it => {
               it.done = true

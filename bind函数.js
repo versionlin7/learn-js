@@ -30,7 +30,7 @@ console.log(a(1,2,3))
 function bin(f, thisArg, ...fixedArgs) {
   return function(...args) {
     console.log(this)
-    f.call(thisArg, ...fixedArgs,...args)
+    return f.call(thisArg, ...fixedArgs,...args)
   }
 }
 

@@ -88,7 +88,7 @@
         })
 
         this.world = world
-        return this
+        return this.word
       }
       
       setCellStatus(row, col) {
@@ -147,8 +147,8 @@
       }
     })
     document.querySelector('#next').addEventListener('click', e => {
-      c.next()
-      world.innerHTML = renderHTML(c)
+      
+      world.innerHTML = renderHTML(c.next())
     })
     document.querySelector('#init').addEventListener('click', e => {
       var c = new Conway()

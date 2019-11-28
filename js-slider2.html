@@ -34,6 +34,7 @@
       height: 13px;
       font-size: 0;
       left: 50%;
+      transform:translateX(-50%);
       margin-left: -39px;
       background-color: rgba(114, 54, 54, 0.3);
       margin: 0;
@@ -173,7 +174,7 @@
       makeAutoPlay() {
         setInterval(() => {
           this.next() 
-        },1000)
+        },2000)
       }
 
       wrapImg() {
@@ -191,7 +192,6 @@
         imgWrapper.append(lastImg)
         imgWrapper.append(...imgs)
         imgWrapper.append(firstImg)
-        
         imgWrapper.style.width = (this.imgNum + 2) * this.width + 'px'
         imgWrapper.style.left = -this.width + 'px'
         this.imgWrapper = imgWrapper
@@ -207,7 +207,6 @@
         }
         return Object.assign({}, defaultOptions, options)
       }
-
     }
     new Slider(document.querySelector('div.Slider'))
   </script>

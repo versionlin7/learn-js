@@ -36,11 +36,14 @@ function throttle(f, duration) {
   var lastTime = 0
   return function(...args) {
     clearTimeout(timeId)
+    
     var now = Date.now()
-    if(now - lastTime > 300) {
+    if(now - lastTime > duration) {
+      
       f(...args)
       lastTime = now
     }else {
+      
       timeId = setTimeout(() => {
         f(...args)
         lastTime = now
