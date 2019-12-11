@@ -66,3 +66,14 @@ addEventListener("mousemove", function(event) {
     }, 250)
   }
 })
+
+
+function throttle(fn, time) {
+  let preTime = 0
+  return () => {
+    if (time <= Date.now() - preTime) {
+      fn()
+      preTime = Date.now()
+    }
+  }
+}

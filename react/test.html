@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="./react.js"></script>
+  <script src="./babel.min.js"></script>
+  <script src="./react-dom.js"></script>
+  <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+  class Cat extends React.Component {
+    render() {
+      const mouse = this.props.mouse;
+      console.log(mouse.x)
+      let lefts = mouse.x - 50
+      let tops = mouse.y - 50
+      return (
+        <div style={{width:'100px',height:'100px', position: 'absolute', left: lefts , top: tops ,border:'1px solid' }} />
+      );
+    }
+  }
+  
+  class Mouse extends React.Component {
+    constructor(props) {
+      super(props);
+      this.handleMouseMove = this.handleMouseMove.bind(this);
+      this.state = { x: 0, y: 0 };
+    }
+  
+    handleMouseMove(event) {
+      this.setState({
+        x: event.clientX,
+        y: event.clientY
+      });
+    }
+  
+    render() {
+      return (
+        <div style={{height:'100vh'}} onMouseMove={this.handleMouseMove}>
+  
+          
+          {this.props.render(this.state)}
+        </div>
+      );
+    }
+  }
+  
+  class MouseTracker extends React.Component {
+   render() {
+      return (
+        <div>
+          <h1>移动鼠标!</h1>
+          <Mouse render={mouse => (
+            <Cat mouse={mouse} />
+          )}/>
+        </div>
+      );
+    }
+  }
+  ReactDOM.render(<MouseTracker />,document.querySelector('#root'))
+</script>
+
+</body>
+</html>
